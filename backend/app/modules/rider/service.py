@@ -43,7 +43,7 @@ class RiderIntelligenceService:
         
     def train_models(self, db: Session, data_path: str = "data/rider_loans.csv") -> Dict[str, Any]:
         """Loads simulated rider profiles, trains models, and updates Model Governance registry."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         full_data_path = os.path.join(project_root, data_path)
         
         if not os.path.exists(full_data_path):
@@ -129,7 +129,7 @@ class RiderIntelligenceService:
 
     def evaluate_portfolio(self, db: Session, new_distances: Optional[np.ndarray] = None) -> Dict[str, Any]:
         """Evaluates overall credit exposure and rider churn rates across the portfolio."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         data_path = os.path.join(project_root, "data/rider_loans.csv")
         
         if not os.path.exists(data_path):
@@ -174,7 +174,7 @@ class RiderIntelligenceService:
         
     def get_rider_cohort(self) -> List[Dict[str, Any]]:
         """Loads a slice of simulated riders for dashboard mapping."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         data_path = os.path.join(project_root, "data/rider_loans.csv")
         if not os.path.exists(data_path):
             return []

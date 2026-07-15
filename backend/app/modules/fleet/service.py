@@ -19,7 +19,7 @@ class FleetIntelligenceService:
     
     @staticmethod
     def get_fleet_summary() -> Dict[str, Any]:
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
         
         conn = get_duckdb_conn()

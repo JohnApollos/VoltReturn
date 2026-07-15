@@ -75,8 +75,8 @@ class NetworkOptimizer:
             subcounty_path (str): Relative subcounties path.
             stations_path (str): Relative swap stations path.
         """
-        # Paths anchored from project root
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        # Paths anchored from backend root
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         full_subcounty_path = os.path.join(project_root, subcounty_path)
         full_stations_path = os.path.join(project_root, stations_path)
         

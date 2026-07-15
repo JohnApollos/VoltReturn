@@ -10,7 +10,11 @@ db_url = settings.DATABASE_URL
 if db_url.startswith("sqlite:///"):
     # Ensure database directory exists
     db_file = db_url.replace("sqlite:///", "")
-    if db_file and not os.path.isabs(db_file):
+    if os.environ.get("VERCEL"):
+        # Serverless environments are read-only; use /tmp directory
+        db_file = os.path.join("/tmp", "backend.db")
+        db_url = f"sqlite:///{db_file}"
+    elif db_file and not os.path.isabs(db_file):
         # Anchor relative to backend root
         backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         db_file = os.path.join(backend_dir, db_file)
