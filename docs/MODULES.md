@@ -7,13 +7,14 @@ This document outlines the operational and executive questions answered by each 
 ## Module 1: Infrastructure Intelligence
 * **Executive Question**: Where should we build next?
 * **Methodology**: Identifies coverage gaps by looking for regions outside a 5km radius of the **66 active swap stations** mapped across Nairobi. Runs sample-weighted K-Means placement optimization on gap grid points, using subcounty population densities as weights.
-* **Visual Interface**: `GisWorkspaceView` and `OptimizationView` mapping the recommended centroids (neon-green circle markers with pulse loops) and listing coordinate indices.
+* **Visual Interface**: `GisWorkspaceView` and `OptimizationView` mapping the recommended centroids (neon-green circle markers) and listing coordinate indices.
 
 ---
 
 ## Module 2: Fleet Intelligence
 * **Executive Question**: How healthy is our fleet?
-* **Methodology**: Computes State of Health (SoH) capacity fade curves from battery telemetry. Applies a Weibull survival function to cycles and temperatures to project Remaining Useful Life (RUL).
+* **Methodology**: Computes State of Health (SoH) capacity fade curves from battery telemetry. Applies a Weibull survival function to cycles and temperatures to project Remaining Useful Life (RUL). 
+* **Real-time Telemetry Ingestion**: Exposes a `POST /api/v1/fleet/ingest` REST endpoint. This endpoint accepts external batched battery telemetry logs, validates types and boundaries, records completeness audits in the SQLite quality log, and appends the records directly to the underlying `battery_telemetry.parquet` database file.
 * **Visual Interface**: Fleet Health Audit console displaying capacity status, average SoH, and risk warnings.
 
 ---
@@ -53,10 +54,10 @@ This document outlines the operational and executive questions answered by each 
 ## Executive Interface Systems
 
 ### Scenario Comparison Matrix
-Allows side-by-side comparative analysis of saved capital configurations, tracking IRR, NPV, Payback, and default risks to highlight the mathematically optimal project.
+Allows side-by-side comparative analysis of saved capital configurations, tracking IRR, NPV, Payback, and default risks to highlight the mathematically optimal project. Wrapped in an `overflow-x-auto` container for complete mobile responsiveness.
 
 ### AI Decision Strategy Assistant
-An expert RAG strategy chat interface utilizing the **June 2026 google-genai Interactions API**. Queries DuckDB for metrics, context-grounds the numbers, and returns grounded business recommendations.
+An expert RAG strategy chat interface utilizing the official **Google GenAI SDK (Gemini 2.5 Flash)**. Queries DuckDB for metrics, context-grounds the numbers, and returns grounded business recommendations.
 
 ### Board Presentation Mode (Board Mode)
 A one-click toggle that optimizes the layout for presentation settings. Hides sidebars, centers scorecards, and increases typography sizes to ease visual review during board meetings.

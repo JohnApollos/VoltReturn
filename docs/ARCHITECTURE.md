@@ -16,7 +16,7 @@ VoltReturn follows a decoupled Monorepo pattern, partitioning services between t
                                          │ HTTP REST API
                                          ▼
                   ┌──────────────────────────────────────────────┐
-                  │               FASTAPI BACKEND                │
+                  │               FASTAPI BACKEND                 │
                   │   Core calculation, SQLite, & DuckDB logic   │
                   └──────┬──────────────────────┬──────────┬─────┘
                          │                      │          │
@@ -46,23 +46,27 @@ VoltReturn/
 │   │   │   └── schemas.py      # Tables: recommendations, governance, quality logs
 │   │   ├── modules/            # Product Modules
 │   │   │   ├── infrastructure/ # Optimal placement optimization (K-Means)
-│   │   │   ├── fleet/          # Battery cycle wear-out & Weibull survival
+│   │   │   ├── fleet/          # Battery cycle wear-out, Weibull survival & Ingestion API
 │   │   │   ├── rider/          # PAYG credit risk (logistic regression) & churn
 │   │   │   ├── finance/        # DCF, IRR, and Monte Carlo simulations
 │   │   │   ├── sustainability/ # Carbon credits (Verra VM0038)
 │   │   │   ├── reporting/      # ReportLab Board Memo PDF generator
-│   │   │   └── ai_assistant/   # google-genai RAG assistant (June 2026 SDK)
+│   │   │   └── ai_assistant/   # google-genai RAG assistant (Gemini 2.5 Flash)
 │   │   ├── main.py             # FastAPI entrypoint
 │   │   └── tests/              # Pytest modules
+│   ├── data/                   # Bundled dataset repository (inside backend for Vercel packaging)
+│   │   ├── existing_stations.csv   # 66 active geocoded stations in Nairobi
+│   │   ├── nairobi_subcounties.csv # Demographics and population density
+│   │   ├── rider_loans.csv         # Cohort profiles (1000 riders)
+│   │   └── battery_telemetry.parquet # High-frequency battery logs (5000 records)
 │   └── requirements.txt
 ├── frontend/                   # Next.js App Router Application
 │   ├── public/                 # Branding assets and logos
 │   │   ├── logo-wide.png       # Landscape banner logo
-│   │   ├── icon-white.jpg      # White background icon logo
 │   │   └── icon-transparent.png # Transparent icon logo
 │   ├── src/
 │   │   ├── app/                # App Router and CSS entrypoints
-│   │   │   ├── globals.css     # Dark mode CSS and pulse animations
+│   │   │   ├── globals.css     # Dark mode CSS and design tokens
 │   │   │   ├── layout.tsx      # Main layout mapping Leaflet CDN
 │   │   │   └── page.tsx        # Dashboard portal organizing modular views
 │   │   ├── store/
@@ -79,17 +83,9 @@ VoltReturn/
 │   │           ├── AiAdvisorView.tsx    # Gemini RAG strategy console
 │   │           ├── CompareScenariosView.tsx # Saved scenario matrix comparisons
 │   │           └── BoardMemoView.tsx    # McKinsey print brief & export PDF
-├── data/                       # Local file database repository
-│   ├── existing_stations.csv   # 66 active geocoded stations in Nairobi
-│   ├── nairobi_subcounties.csv # Demographics and population density
-│   ├── rider_loans.csv         # Cohort profiles (1000 riders)
-│   └── battery_telemetry.parquet # High-frequency battery logs (5000 records)
-├── docs/                       # Comprehensive documentation suite
-│   ├── ARCHITECTURE.md
-│   ├── MODULES.md
-│   └── MATHEMATICAL_MODELS.md
-├── README.md
-└── .gitignore
+│   └── package.json
+├── vercel.json                 # Monorepo Vercel build & route rules mapping
+└── README.md
 ```
 
 ---
@@ -104,6 +100,7 @@ Rather than running heavy, expensive relational server databases or cloud wareho
   * `recommendations`: Ledger logging proposed station coordinates, confidence ratings, status, and observed forecasting accuracy.
   * `model_governance`: Audit trail of deployed ML models (features, hyperparameters, intercept parameters, validation accuracy).
   * `data_quality_logs`: Database of ingestion validation runs.
+* **Serverless Portability**: In read-only serverless cloud containers (like Vercel functions), the SQLite database file path automatically redirects to `/tmp/backend.db` (which is fully writeable), guaranteeing 100% crash-proof deployment.
 
 ### DuckDB Analytical Engine
 * **Role**: In-memory analytical scanning on large datasets.

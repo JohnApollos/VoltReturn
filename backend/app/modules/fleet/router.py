@@ -43,3 +43,35 @@ def trigger_simulation(num_batteries: int = 50, records: int = 100):
         return {"status": "success", "detail": f"Simulated {num_batteries} battery profiles with {records} logs each."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Simulation failed: {str(e)}")
+
+# Pydantic Schemas for Real Telemetry Ingestion
+from pydantic import BaseModel, Field
+from typing import List
+
+class TelemetryLogInput(BaseModel):
+    battery_id: str = Field(..., examples=["BATT-001"])
+    vehicle_id: str = Field(..., examples=["VEH-102"])
+    timestamp: str = Field(..., examples=["2026-07-16T12:00:00Z"])
+    soh: float = Field(..., ge=0.0, le=100.0, examples=[98.5])
+    soc: float = Field(..., ge=0.0, le=100.0, examples=[85.0])
+    cycle_count: int = Field(..., ge=0, examples=[150])
+    temperature: float = Field(..., examples=[32.5])
+
+class TelemetryIngestRequest(BaseModel):
+    records: List[TelemetryLogInput]
+
+@router.post("/ingest")
+def ingest_telemetry_batch(
+    payload: TelemetryIngestRequest,
+    db: Session = Depends(get_db)
+):
+    """Ingests external real battery telemetry records, validates types/limits, and appends to Parquet database."""
+    try:
+        raw_records = [record.model_dump() for record in payload.records]
+        result = FleetIntelligenceService.ingest_telemetry(raw_records, db)
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Telemetry ingestion failed: {str(e)}"
+        )

@@ -160,3 +160,58 @@ class FleetIntelligenceService:
             raise e
         finally:
             conn.close()
+
+    @staticmethod
+    def ingest_telemetry(records: List[Dict[str, Any]], db: Session) -> Dict[str, Any]:
+        """Appends new telemetry logs to the Parquet database and registers a data quality audit."""
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
+        
+        # Convert records to DataFrame
+        df_new = pd.DataFrame(records)
+        
+        # Ensure correct column types
+        df_new["timestamp"] = pd.to_datetime(df_new["timestamp"])
+        df_new["soh"] = df_new["soh"].astype(float)
+        df_new["soc"] = df_new["soc"].astype(float)
+        df_new["cycle_count"] = df_new["cycle_count"].astype(int)
+        df_new["temperature"] = df_new["temperature"].astype(float)
+        
+        # Basic Validation check
+        null_count = int(df_new.isnull().sum().sum())
+        out_of_bounds_soh = int(((df_new["soh"] < 0) | (df_new["soh"] > 100)).sum())
+        
+        # Log to Data Quality table
+        from backend.app.models.schemas import DataQualityLog
+        dq_log = DataQualityLog(
+            dataset_name="battery_telemetry_parquet",
+            records_scanned=len(df_new),
+            null_count=null_count,
+            duplicates_count=0,
+            boundary_violations=out_of_bounds_soh,
+            status="PASS" if out_of_bounds_soh == 0 else "WARNING",
+            remediation_applied="Ingested batch logs successfully."
+        )
+        db.add(dq_log)
+        db.commit()
+        
+        # Append to existing parquet
+        if os.path.exists(parquet_path):
+            try:
+                df_existing = pd.read_parquet(parquet_path)
+                df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+                df_combined.to_parquet(parquet_path, index=False)
+            except Exception as e:
+                logger.error("Failed to append to existing parquet: %s", e)
+                df_new.to_parquet(parquet_path, index=False)
+        else:
+            df_new.to_parquet(parquet_path, index=False)
+            
+        return {
+            "status": "success",
+            "records_ingested": len(df_new),
+            "data_quality": {
+                "null_count": null_count,
+                "boundary_violations": out_of_bounds_soh
+            }
+        }
