@@ -81,6 +81,15 @@ interface VoltReturnState {
 
 const BACKEND_URL = 'http://127.0.0.1:8000';
 
+let currentRequestVersion = 0;
+let debounceTimer: NodeJS.Timeout | null = null;
+const debouncedRunSimulation = (get: any) => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    get().runSimulation();
+  }, 250);
+};
+
 export const useStore = create<VoltReturnState>()(
   persist(
     (set, get) => ({
@@ -119,18 +128,19 @@ export const useStore = create<VoltReturnState>()(
       
       setSlider: (key, value) => {
         set({ [key]: value } as any);
-        // Trigger simulation run on change
-        get().runSimulation();
+        debouncedRunSimulation(get);
       },
       
       setToggle: (key, value) => {
         set({ [key]: value } as any);
-        // Trigger simulation run on change
-        get().runSimulation();
+        debouncedRunSimulation(get);
       },
       
       // Runs complete analytical integration
       runSimulation: async () => {
+        currentRequestVersion += 1;
+        const thisVersion = currentRequestVersion;
+        
         set({ isLoading: true, error: null });
         const { budget_kes, num_stations, horizon_years, risk_appetite, tariff_type, default_rate_pct } = get();
         
@@ -142,6 +152,8 @@ export const useStore = create<VoltReturnState>()(
           if (!simRes.ok) throw new Error('Failed to run DCF simulation');
           const simData = await simRes.json();
           
+          if (thisVersion !== currentRequestVersion) return;
+
           // 2. Fetch K-Means GIS recommendations
           const gisRes = await fetch(
             `${BACKEND_URL}/api/v1/infrastructure/recommend?num_stations=${num_stations}&gap_threshold_km=5.0`
@@ -149,14 +161,20 @@ export const useStore = create<VoltReturnState>()(
           if (!gisRes.ok) throw new Error('Failed to retrieve GIS recommendations');
           const gisData = await gisRes.json();
           
+          if (thisVersion !== currentRequestVersion) return;
+
           // 3. Fetch Fleet degradation survival summary
-          const fleetRes = await fetch(`${BACKEND_URL}/api/v1/fleet/status`);
+          const fleetRes = await fetch(`${BACKEND_URL}/api/v1/fleet/summary`);
           const fleetSummary = fleetRes.ok ? await fleetRes.json() : null;
           
+          if (thisVersion !== currentRequestVersion) return;
+
           // 4. Fetch Portfolio default and churn summary
           const portRes = await fetch(`${BACKEND_URL}/api/v1/rider/portfolio-summary`);
           const portfolioSummary = portRes.ok ? await portRes.json() : null;
           
+          if (thisVersion !== currentRequestVersion) return;
+
           set({
             simulationData: simData,
             gisData: gisData,
@@ -165,7 +183,9 @@ export const useStore = create<VoltReturnState>()(
             isLoading: false
           });
         } catch (e: any) {
-          set({ error: e.message || 'Server connection failed', isLoading: false });
+          if (thisVersion === currentRequestVersion) {
+            set({ error: e.message || 'Server connection failed', isLoading: false });
+          }
         }
       },
       
