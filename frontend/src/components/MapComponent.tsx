@@ -13,7 +13,7 @@ export const MapComponent: React.FC = () => {
 
   // Load existing swap stations coordinates on component mount
   useEffect(() => {
-    const apiPrefix = typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+    const apiPrefix = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
       ? 'http://127.0.0.1:8000' 
       : '';
     fetch(`${apiPrefix}/api/v1/infrastructure/recommend?num_stations=1`)
