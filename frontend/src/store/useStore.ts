@@ -79,7 +79,10 @@ interface VoltReturnState {
   deleteScenario: (id: string) => void;
 }
 
-const BACKEND_URL = 'http://127.0.0.1:8000';
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost' 
+    ? 'http://127.0.0.1:8000' 
+    : '');
 
 let currentRequestVersion = 0;
 let debounceTimer: NodeJS.Timeout | null = null;
