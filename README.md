@@ -42,7 +42,7 @@ graph TD
 
 ## 3. Product Modules Overview
 
-VoltReturn is composed of six analytical modules (detailed inside [docs/MODULES.md](file:///docs/MODULES.md)):
+VoltReturn is composed of six analytical modules (detailed inside [docs/MODULES.md](docs/MODULES.md)):
 1. **Infrastructure Intelligence**: Identifies underserved spatial centroids among **66 active swap stations** in Nairobi. Suggests optimal new locations using sample-weighted K-Means placement algorithms.
 2. **Fleet Intelligence**: Evaluates capacity fade on cell telemetry. Applies Weibull survival probability functions to estimate Remaining Useful Life (RUL) cycles.
 3. **Rider Intelligence**: Computes borrower credit default risk (logistic regression) and customer churn probability.
@@ -50,7 +50,7 @@ VoltReturn is composed of six analytical modules (detailed inside [docs/MODULES.
 5. **Operations Intelligence**: Forecasts battery swaps and grid loading schedules.
 6. **Sustainability Intelligence**: Calculates CO2 displacement under Verra VM0038 rules to project carbon credit values.
 
-For the mathematical formulations, refer to the [docs/MATHEMATICAL_MODELS.md](file:///docs/MATHEMATICAL_MODELS.md) guide.
+For the mathematical formulations, refer to the [docs/MATHEMATICAL_MODELS.md](docs/MATHEMATICAL_MODELS.md) guide.
 
 ---
 
