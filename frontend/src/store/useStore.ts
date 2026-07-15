@@ -199,10 +199,10 @@ export const useStore = create<VoltReturnState>()(
         }));
         
         try {
-          const res = await fetch(`${BACKEND_URL}/api/v1/assistant/query`, {
+          const res = await fetch(`${BACKEND_URL}/api/v1/ai-assistant/query`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: prompt })
+            body: JSON.stringify({ query: prompt })
           });
           
           if (!res.ok) throw new Error('Assistant failed to respond');
