@@ -26,15 +26,15 @@ graph TD
     API -->|High-speed Parquet scans| Duck[DuckDB analytical engine]
     API -->|Interactions API June 2026| Gemini[Google Gemini 3.5 Flash]
     
-    subgraph Data Layer
+    subgraph "Data Layer"
         SQL -->|Governance Registry| G[Model Governance]
         SQL -->|Recommendation Ledger| R[Recommendations]
         Duck -->|Time-series pack logs| P[battery_telemetry.parquet]
     end
     
-    subgraph Frontend Workspace (Zustand LocalStorage)
+    subgraph "Frontend Workspace (Zustand LocalStorage)"
         User -->|Active Configuration| Z[Zustand Store]
-        Z -->|Save/Load Scenarios| LS[(LocalStorage)]
+        Z -->|Save/Load Scenarios| LS["LocalStorage (Browser)"]
     end
 ```
 
