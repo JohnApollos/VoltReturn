@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+duckdb
+pandas
+numpy
+scipy
+scikit-learn
+lifelines
+google-genai
+pydantic-settings
+python-dotenv
+reportlab
+pytest
+openlocationcode
+pypdf

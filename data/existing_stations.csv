@@ -1,0 +1,67 @@
+station_id,name,brand,lat,lon,cabinets,grid_reliability,peak_power_kw
+BSS-ROAM-01,Roam Hub - Lusaka,Roam,-1.3050,36.8350,3,0.94,60.0
+BSS-ROAM-02,Roam Hub - Adams Arcade,Roam,-1.3010,36.7820,2,0.92,40.0
+BSS-ROAM-03,Roam Hub - Langata,Roam,-1.3280,36.7910,2,0.93,40.0
+BSS-ROAM-04,Roam Hub - Karambee,Roam,-1.2610,36.8640,2,0.89,40.0
+BSS-ROAM-05,Roam Hub - Suguta Centre,Roam,-1.2820,36.7970,2,0.95,40.0
+BSS-ROAM-06,Roam Hub - Kayole,Roam,-1.2750,36.8950,2,0.88,40.0
+BSS-ROAM-07,Roam Hub - Quickmart Roysambu,Roam,-1.2180,36.8890,3,0.91,60.0
+BSS-AMP-01,Ampersand - TotalEnergies Hurlingham,Ampersand,-1.2941,36.8025,2,0.95,45.0
+BSS-AMP-02,Ampersand - TotalEnergies Dagoretti,Ampersand,-1.3025,36.7350,1,0.88,22.5
+BSS-AMP-03,Ampersand - TotalEnergies Mountain View,Ampersand,-1.2620,36.7450,2,0.90,45.0
+BSS-AMP-04,Ampersand - TotalEnergies Limuru Road,Ampersand,-1.2405,36.8200,1,0.92,22.5
+BSS-AMP-05,Ampersand - TotalEnergies Gigiri,Ampersand,-1.2330,36.8030,2,0.96,45.0
+BSS-AMP-06,Ampersand - TotalEnergies Mombasa Road,Ampersand,-1.3400,36.8900,2,0.94,45.0
+BSS-AMP-07,Ampersand - TotalEnergies Westlands,Ampersand,-1.2650,36.8000,3,0.95,67.5
+BSS-AMP-08,Ampersand - TotalEnergies Thika Road,Ampersand,-1.2220,36.8850,2,0.89,45.0
+BSS-AMP-09,Ampersand Ongata Rongai,Ampersand,-1.3960,36.7580,2,0.88,45.0
+BSS-AMP-10,Ampersand E-mobility (Old Mombasa Road),Ampersand,-1.3500,36.9020,4,0.95,90.0
+BSS-AMP-11,Ampersand Starehe Swap Station,Ampersand,-1.2750,36.8250,2,0.94,45.0
+BSS-AMP-12,Ampersand Kayole Spine Road,Ampersand,-1.2760,36.9050,2,0.87,45.0
+BSS-AMP-13,Ampersand Wangige Swap Station,Ampersand,-1.2480,36.7210,1,0.89,22.5
+BSS-AMP-14,Ampersand Kangundo Road Swap Station,Ampersand,-1.2750,36.9150,2,0.88,45.0
+BSS-AMP-15,Ampersand Ngara Road,Ampersand,-1.2690,36.8240,1,0.92,22.5
+BSS-AMP-16,Ampersand Mlolongo Swap Station,Ampersand,-1.3980,36.9240,2,0.90,45.0
+BSS-AMP-17,Ampersand Utalii Swap Station,Ampersand,-1.2580,36.8430,2,0.91,45.0
+BSS-SPI-01,Spiro - Petrocity Westlands,Spiro,-1.2640,36.8040,2,0.95,45.0
+BSS-SPI-02,Spiro - Petrocity Gigiri,Spiro,-1.2350,36.8150,1,0.96,22.5
+BSS-SPI-03,Spiro - Petrocity Mombasa Road,Spiro,-1.3320,36.8750,2,0.93,45.0
+BSS-SPI-04,Spiro - Petrocity Ngong Road,Spiro,-1.3010,36.7720,2,0.91,45.0
+BSS-SPI-05,Spiro - Petrocity Industrial Area,Spiro,-1.3120,36.8450,3,0.94,67.5
+BSS-SPI-06,Spiro - Petrocity Karen,Spiro,-1.3250,36.7200,1,0.90,22.5
+BSS-SPI-07,Spiro - Petrocity Outering Road,Spiro,-1.2750,36.8950,2,0.87,45.0
+BSS-SPI-08,Spiro Swap Station Magadi Road,Spiro,-1.3650,36.7640,2,0.89,45.0
+BSS-SPI-09,Spiro Swap Station Quickmart,Spiro,-1.2940,36.8010,2,0.93,45.0
+BSS-SPI-10,Spiro Swap Station Stage View Bar,Spiro,-1.2510,36.7320,1,0.89,22.5
+BSS-SPI-11,Spiro Swap Station Langata Road,Spiro,-1.3250,36.7820,2,0.92,45.0
+BSS-SPI-12,Spiro Swap Station QV3F+556,Spiro,-1.3410,36.8620,2,0.90,45.0
+BSS-SPI-13,Spiro Swap Station Kahawa Wendani,Spiro,-1.2010,36.9180,2,0.88,45.0
+BSS-SPI-14,Spiro Swap Station Savannah Road,Spiro,-1.2990,36.8850,2,0.89,45.0
+BSS-SPI-15,Spiro Swap Station Fedha,Spiro,-1.3120,36.8980,2,0.90,45.0
+BSS-SPI-16,Spiro Swap Station Kitengela,Spiro,-1.4820,36.9620,2,0.86,45.0
+BSS-SPI-17,Spiro Swap Station Kayole Junction,Spiro,-1.2820,36.9140,2,0.88,45.0
+BSS-SPI-18,Spiro Swap Station - Ruai FOFO,Spiro,-1.2650,36.9850,2,0.87,45.0
+BSS-SPI-19,Spiro Swap - Oryx Energies Jogoo Road,Spiro,-1.2920,36.8520,3,0.92,67.5
+BSS-SPI-20,Spiro Swap Station Utawala,Spiro,-1.2950,36.9320,2,0.89,45.0
+BSS-SPI-21,Spiro Swap - Umoja (Phase 1),Spiro,-1.2910,36.8880,2,0.90,45.0
+BSS-SPI-22,Spiro Swap - Embakasi,Spiro,-1.3160,36.8980,2,0.91,45.0
+BSS-SPI-23,Spiro Swap - Kibera,Spiro,-1.3150,36.7850,3,0.92,67.5
+BSS-SPI-24,Spiro Swap - Lucky Summer,Spiro,-1.2290,36.8950,2,0.88,45.0
+BSS-SPI-25,Spiro Swap - Uthiru,Spiro,-1.2610,36.7340,1,0.89,22.5
+BSS-SPI-26,Spiro Swap - Kitengela FOFO,Spiro,-1.4850,36.9650,1,0.85,22.5
+BSS-SPI-27,Spiro Swap Station Sasumua Line,Spiro,-1.2850,36.7820,2,0.93,45.0
+BSS-SPI-28,Spiro Swap Station Mlolongo Town,Spiro,-1.3980,36.9240,2,0.89,45.0
+BSS-ZEN-01,Zeno Swap Station - Langata Mall,Zeno,-1.3320,36.7940,2,0.93,30.0
+BSS-ZEN-02,Zeno Swap Station - Quickmart Waiyaki Way,Zeno,-1.2620,36.7460,2,0.91,30.0
+BSS-ZEN-03,Zeno Swap Station - One Stop Arcade Karen,Zeno,-1.3210,36.7110,1,0.90,15.0
+BSS-ZEN-04,Zeno Swap Station - Xpress Auto Kawangware,Zeno,-1.2850,36.7480,2,0.89,30.0
+BSS-ZEN-05,Zeno Swap Station - Mpaka Road Westlands,Zeno,-1.2640,36.8040,2,0.95,30.0
+BSS-ZEN-06,Zeno Swap Station - M Square Kilimani,Zeno,-1.2890,36.7910,2,0.92,30.0
+BSS-ZEN-07,Zeno Swap Station - Kwa Ndwaru Kangemi,Zeno,-1.2610,36.7410,1,0.89,15.0
+BSS-ZEN-08,Zeno Swap Station - Bunyala Road,Zeno,-1.3010,36.8220,2,0.94,30.0
+BSS-ZEN-09,Zeno Swap Station - Mavuno Garage Upperhill,Zeno,-1.2990,36.8150,2,0.93,30.0
+BSS-ZEN-10,Zeno Swap Station - Tabere Crescent Kilimani,Zeno,-1.2850,36.7920,2,0.92,30.0
+BSS-ZEN-11,Zeno Swap Station - Kasarani,Zeno,-1.2220,36.8980,2,0.89,30.0
+BSS-OTH-01,Voltnova Swap Station,Voltnova,-1.2910,36.8220,1,0.92,20.0
+BSS-OTH-02,Enzi Swap Station - Dagoretti Market,Enzi,-1.2910,36.7210,1,0.88,20.0
+BSS-OTH-03,Stima Boda Battery Swap Station,Stima Boda,-1.2810,36.8220,2,0.92,40.0
