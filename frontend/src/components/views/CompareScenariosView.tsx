@@ -62,7 +62,7 @@ export const CompareScenariosView: React.FC = () => {
           
           {/* Highlight Optimal Scenario Card */}
           {optimalSc && (
-            <div className="glass-panel p-5 rounded-lg border-l-4 border-l-emerald-500 bg-gradient-to-r from-emerald-500/5 to-transparent flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="glass-panel p-5 rounded border-l-4 border-l-emerald-500 bg-[#0e1017] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <div className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1">Recommended Optimization Outcome</div>
                 <h3 className="text-white font-extrabold text-lg">Scenario: {optimalSc.name}</h3>
@@ -80,10 +80,10 @@ export const CompareScenariosView: React.FC = () => {
           )}
 
           {/* Matrix Comparison Table */}
-          <div className="glass-panel rounded-lg overflow-hidden border border-[#1e293b]">
-            <table className="w-full text-left border-collapse text-xs select-none">
+          <div className="glass-panel rounded overflow-x-auto border border-[#181b24] w-full">
+            <table className="w-full text-left border-collapse text-xs select-none min-w-[800px]">
               <thead>
-                <tr className="bg-[#0b0f19] border-b border-[#1e293b] text-slate-400 font-bold uppercase tracking-wider">
+                <tr className="bg-[#0c0d12] border-b border-[#181b24] text-slate-400 font-bold uppercase tracking-wider">
                   <th className="p-4">Scenario Name</th>
                   <th className="p-4 text-center">Budget (CapEx)</th>
                   <th className="p-4 text-center">BSS Units</th>
@@ -96,7 +96,7 @@ export const CompareScenariosView: React.FC = () => {
                   <th className="p-4 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1e293b] text-slate-300">
+              <tbody className="divide-y divide-[#181b24] text-slate-300">
                 {savedScenarios.map((sc) => (
                   <tr 
                     key={sc.id} 

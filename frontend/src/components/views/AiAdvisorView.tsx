@@ -32,7 +32,7 @@ export const AiAdvisorView: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 h-[calc(100vh-140px)] flex flex-col gap-6 max-w-4xl mx-auto">
+    <div className="p-6 lg:h-[calc(100vh-120px)] h-[calc(100vh-100px)] flex flex-col gap-6 max-w-4xl mx-auto">
       
       {/* HEADER */}
       <div className="flex justify-between items-center border-b border-[#1e293b] pb-4 mb-2 shrink-0">
@@ -119,7 +119,7 @@ export const AiAdvisorView: React.FC = () => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={aiLoading}
-          className="flex-1 px-4 py-3 bg-[#0b0f19] border border-[#1e293b] rounded text-white text-sm focus:outline-none focus:border-emerald-500"
+          className="flex-1 px-4 py-3 bg-[#0e1017] border border-[#181b24] rounded text-white text-sm focus:outline-none focus:border-emerald-500"
         />
         <button
           type="submit"

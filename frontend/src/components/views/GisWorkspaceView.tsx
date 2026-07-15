@@ -20,11 +20,11 @@ export const GisWorkspaceView: React.FC = () => {
   const { gisData, isLoading } = useStore();
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 h-[calc(100vh-140px)]">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6 lg:h-[calc(100vh-120px)] h-auto overflow-y-auto lg:overflow-hidden">
       
       {/* LEFT COLUMN: Recommended Centroids Listing */}
-      <div className="lg:col-span-1 glass-panel p-5 rounded-lg flex flex-col justify-between h-full overflow-hidden">
-        <div className="flex flex-col h-full overflow-hidden">
+      <div className="lg:col-span-1 glass-panel p-5 rounded flex flex-col justify-between lg:h-full h-auto overflow-hidden">
+        <div className="flex flex-col lg:h-full overflow-hidden">
           
           <div className="flex items-center gap-2 border-b border-[#1e293b] pb-3 mb-4 shrink-0">
             <Layers className="text-emerald-400 w-5 h-5" />
@@ -79,7 +79,7 @@ export const GisWorkspaceView: React.FC = () => {
       </div>
 
       {/* RIGHT COLUMN: Cinematic GIS Map Wrapper */}
-      <div className="lg:col-span-3 h-full">
+      <div className="lg:col-span-3 lg:h-full h-[450px]">
         <LazyMapComponent />
       </div>
     </div>
