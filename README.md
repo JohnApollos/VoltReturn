@@ -1,7 +1,7 @@
 # VoltReturn
 ### An AI-Powered Decision Intelligence Platform for African Electric Mobility & Finance
 
-VoltReturn is an enterprise-grade decision-support platform designed for electric motorcycle (boda boda) operators, pay-as-you-go (PAYG) asset financiers, and climate finance investors in East Africa. 
+VoltReturn is an enterprise-grade investment decision and analytics platform designed for electric motorcycle (boda boda) operators, pay-as-you-go (PAYG) asset financiers, and climate finance investors in East Africa.
 
 ---
 
@@ -17,11 +17,11 @@ VoltReturn bridges this gap. It turns raw spatial, financial, and battery teleme
 
 ## 2. Platform Architecture
 
-The system features a modular backend (FastAPI, SQLite, DuckDB) integrated with a modern web dashboard.
+VoltReturn features a decoupled Monorepo structure, combining a FastAPI analytical backend with a modern, high-performance Next.js single-page application (SPA).
 
 ```mermaid
 graph TD
-    User[Client Browser / Next.js] -->|HTTP REST| API[FastAPI Backend]
+    User[Client Browser / Next.js SPA] -->|HTTP REST| API[FastAPI Backend]
     API -->|Metadata & Logs| SQL[SQLite relational database]
     API -->|High-speed Parquet scans| Duck[DuckDB analytical engine]
     API -->|Interactions API June 2026| Gemini[Google Gemini 3.5 Flash]
@@ -30,6 +30,11 @@ graph TD
         SQL -->|Governance Registry| G[Model Governance]
         SQL -->|Recommendation Ledger| R[Recommendations]
         Duck -->|Time-series pack logs| P[battery_telemetry.parquet]
+    end
+    
+    subgraph Frontend Workspace (Zustand LocalStorage)
+        User -->|Active Configuration| Z[Zustand Store]
+        Z -->|Save/Load Scenarios| LS[(LocalStorage)]
     end
 ```
 
@@ -51,17 +56,27 @@ For the mathematical formulations, refer to the [docs/MATHEMATICAL_MODELS.md](fi
 
 ## 4. Key Enterprise Systems
 
-### A. Data Quality Engine
-To address the data reality limits, every dataset ingested undergoes validation checks (null counts, coordinates checking, duplicates, value ranges) logged inside SQLite, generating a **Usability Score** and warning flags before running models.
+### A. Dynamic GIS Mapping Workspace
+An interactive dark-themed spatial mapping workspace powered by Leaflet and CartoDB Dark Matter tiles. Layers can be toggled to render Nairobi's active swap station network, recommended centroids (highlighted with neon-green pulse indicators), population density, and default risk hotspots.
 
-### B. Model Governance Registry
-Audits and version-controls all predictive models. Logged details (features, fitted weights, intercepts, scaling parameters, and validation metrics like Accuracy/AUC) are recorded in SQLite to ensure ML audit compliance.
+### B. Corporate Finance Analytics
+Integrates high-end Recharts components to represent complex financial outcomes:
+* **Monte Carlo Fan Chart**: Shaded area bands showing NPV probability densities.
+* **Cash Flow Waterfall**: Breakdown of revenues against charging costs and PAYG credit write-offs.
+* **Sensitivity Tornado**: Elasticity rankings of critical business drivers (tariffs, default rates, swap demand).
+* **Risk-Return Matrix**: Bubble scatter plot mapping saved scenarios across Risk (default probability) and Return (IRR), identifying the efficient frontier.
 
-### C. Investment Committee Mode (Board Memo Generator)
-Compiles all simulated spatial, financial, and ESG outputs into a styled 5-page PDF board memorandum (via ReportLab) suitable for investment reviews.
+### C. Persistent Scenario Management
+Allows users to save and name multiple capital configurations locally. Persisted in browser LocalStorage via Zustand, scenarios can be loaded instantly or evaluated side-by-side inside a comparative matrix.
 
-### D. AI Decision Assistant
-A RAG reasoning pipeline powered by the **June 2026 google-genai Interactions API**. Queries DuckDB for metrics, context-grounds the numbers, and returns a hallucination-free business summary.
+### D. Board Presentation Mode
+A one-click toggle that optimizes the layout for presentation settings. Hides sidebars, centers scorecards, and increases typography sizes to ease visual review during board meetings.
+
+### E. McKinsey-Style Brief & PDF Exports
+Includes a print-friendly in-browser investment memo styled according to the McKinsey formatting brief, linked directly to the backend ReportLab PDF compiler for immediate exports.
+
+### F. AI Decision Advisor
+A RAG strategy console powered by the **June 2026 google-genai Interactions API**. Queries DuckDB for metrics, context-grounds the numbers, and returns grounded business recommendations.
 
 ---
 
@@ -69,39 +84,36 @@ A RAG reasoning pipeline powered by the **June 2026 google-genai Interactions AP
 
 ### Prerequisites
 * Python 3.10+ installed
-* Standard virtual environment
+* Node.js 18+ installed
 
-### 1. Configure the Virtual Environment
+### 1. Configure the Backend analytical server
 ```bash
-# Create venv
+# Create venv and activate
+cd backend
 python -m venv venv
-
-# Activate venv (Windows PowerShell)
 .\venv\Scripts\activate
 
-# Install dependencies with pre-compiled wheels
-pip install -r backend/requirements.txt --prefer-binary
-```
+# Install dependencies and seed data
+pip install -r requirements.txt --prefer-binary
+python -m app.core.setup_data
 
-### 2. Configure Environment Variables
-Create a `.env` file in the root `backend/` folder:
-```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-DATABASE_URL=sqlite:///backend.db
-DUCKDB_PATH=data/emobility.duckdb
-```
-
-### 3. Seed the Database & Simulate Telemetry
-This compiles the local database, generates 1,000 rider loans, generates 5,000 battery telemetry parquet files, and fits/registers baseline ML models:
-```bash
-python -m backend.app.core.setup_data
-```
-
-### 4. Launch the FastAPI Analytical Server
-```bash
-python -m backend.app.main
+# Launch FastAPI server
+python -m app.main
 ```
 *Access OpenAPI Swagger docs at `http://127.0.0.1:8000/docs`.*
+
+### 2. Configure the Next.js Frontend Client
+Open a new terminal window:
+```bash
+cd frontend
+
+# Install package dependencies
+npm install
+
+# Start development workspace
+npm run dev
+```
+*Access the platform in your browser at `http://localhost:3000`.*
 
 ---
 

@@ -6,12 +6,12 @@ This document outlines the system architecture, directory layouts, and data inte
 
 ## 1. System Topology
 
-VoltReturn follows a decoupled Monorepo pattern, partitioning services between the FastAPI analytical backend and the Next.js visual dashboard client.
+VoltReturn follows a decoupled Monorepo pattern, partitioning services between the FastAPI analytical backend and the Next.js single-page client.
 
 ```
                   ┌──────────────────────────────────────────────┐
                   │                 USER BROWSER                 │
-                  │         Next.js / shadcn / Tailwind          │
+                  │         Next.js App / Zustand Store          │
                   └──────────────────────┬───────────────────────┘
                                          │ HTTP REST API
                                          ▼
@@ -33,7 +33,7 @@ VoltReturn follows a decoupled Monorepo pattern, partitioning services between t
 ## 2. Shared Directory Layout
 
 ```text
-Emobility+/
+VoltReturn/
 ├── backend/
 │   ├── app/
 │   │   ├── core/               # Shared settings, database connections, and validation
@@ -46,7 +46,7 @@ Emobility+/
 │   │   │   └── schemas.py      # Tables: recommendations, governance, quality logs
 │   │   ├── modules/            # Product Modules
 │   │   │   ├── infrastructure/ # Optimal placement optimization (K-Means)
-│   │   │   ├── fleet/          # Battery cycle decay & Weibull survival
+│   │   │   ├── fleet/          # Battery cycle wear-out & Weibull survival
 │   │   │   ├── rider/          # PAYG credit risk (logistic regression) & churn
 │   │   │   ├── finance/        # DCF, IRR, and Monte Carlo simulations
 │   │   │   ├── sustainability/ # Carbon credits (Verra VM0038)
@@ -55,6 +55,30 @@ Emobility+/
 │   │   ├── main.py             # FastAPI entrypoint
 │   │   └── tests/              # Pytest modules
 │   └── requirements.txt
+├── frontend/                   # Next.js App Router Application
+│   ├── public/                 # Branding assets and logos
+│   │   ├── logo-wide.png       # Landscape banner logo
+│   │   ├── icon-white.jpg      # White background icon logo
+│   │   └── icon-transparent.png # Transparent icon logo
+│   ├── src/
+│   │   ├── app/                # App Router and CSS entrypoints
+│   │   │   ├── globals.css     # Dark mode CSS and pulse animations
+│   │   │   ├── layout.tsx      # Main layout mapping Leaflet CDN
+│   │   │   └── page.tsx        # Dashboard portal organizing modular views
+│   │   ├── store/
+│   │   │   └── useStore.ts     # Zustand state and LocalStorage persistence
+│   │   └── components/
+│   │       ├── MapComponent.tsx # Leaflet map nodes and popups
+│   │       └── views/          # Modular workspace views
+│   │           ├── LandingView.tsx      # Onboarding cover page
+│   │           ├── DashboardView.tsx    # Key KPIs and sliders panel
+│   │           ├── GisWorkspaceView.tsx # Map layers and indicators list
+│   │           ├── OptimizationView.tsx # K-Means coordinate tables
+│   │           ├── FinancialView.tsx    # Recharts Monte Carlo, waterfalls, tornado
+│   │           ├── CarbonView.tsx       # ESG indicators
+│   │           ├── AiAdvisorView.tsx    # Gemini RAG strategy console
+│   │           ├── CompareScenariosView.tsx # Saved scenario matrix comparisons
+│   │           └── BoardMemoView.tsx    # McKinsey print brief & export PDF
 ├── data/                       # Local file database repository
 │   ├── existing_stations.csv   # 66 active geocoded stations in Nairobi
 │   ├── nairobi_subcounties.csv # Demographics and population density
@@ -83,4 +107,8 @@ Rather than running heavy, expensive relational server databases or cloud wareho
 
 ### DuckDB Analytical Engine
 * **Role**: In-memory analytical scanning on large datasets.
-* **Mechanism**: Directly executes vectorized SQL commands on local Parquet files (e.g., `battery_telemetry.parquet`). This facilitates sub-second execution times on high-frequency time-series files without server footprint costs.
+* **Mechanism**: Runs inside `":memory:"` in a thread-safe environment. Directly scans local Parquet files (e.g., `battery_telemetry.parquet`) on-the-fly. This prevents file locking conflicts and allows concurrent API queries.
+
+### Zustand LocalStorage Persisted State
+* **Role**: Local scenario memory.
+* **Mechanism**: Leverages the Zustand browser client persistence middleware. All custom scenarios saved by the investment officer are cached locally in the browser, enabling persistent comparative analysis across reloads.
