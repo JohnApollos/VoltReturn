@@ -96,20 +96,20 @@ class AIAssistantService:
 
     @classmethod
     def answer_decision_query(cls, user_query: str, db: Session) -> Dict[str, Any]:
-        """Queries database and feeds facts to Gemini Client Interactions API."""
-        retrieved_data_context = cls._retrieve_context(user_query, db)
-        
-        api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
-        
-        if not api_key:
-            # Safe local fallback to prevent interface failures when key is missing or invalid
-            return {
-                "response": cls._get_mocked_nlp_response(user_query, retrieved_data_context),
-                "retrieved_context": retrieved_data_context,
-                "is_mocked": True
-            }
-            
+        """Queries database and feeds facts to Gemini Client generate_content API."""
         try:
+            retrieved_data_context = cls._retrieve_context(user_query, db)
+            
+            api_key = settings.GEMINI_API_KEY or os.environ.get("GEMINI_API_KEY", "")
+            
+            if not api_key:
+                # Safe local fallback to prevent interface failures when key is missing or invalid
+                return {
+                    "response": cls._get_mocked_nlp_response(user_query, retrieved_data_context),
+                    "retrieved_context": retrieved_data_context,
+                    "is_mocked": True
+                }
+                
             # Setup google-genai Client
             client = genai.Client(api_key=api_key)
             
@@ -136,22 +136,27 @@ class AIAssistantService:
             - [List 2-3 logical next steps based on the numbers]
             """
             
-            # Using the new Interactions API GA June 2026 syntax
-            interaction = client.interactions.create(
-                model="gemini-3.5-flash",
-                input=prompt
+            # Using the standard official generate_content call
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
             )
             
             return {
-                "response": interaction.output_text,
+                "response": response.text,
                 "retrieved_context": retrieved_data_context,
                 "is_mocked": False
             }
         except Exception as e:
-            logger.error("Gemini GenAI model call failed: %s", e)
+            logger.error("AI Assistant query evaluation failed: %s", e)
+            fallback_context = ""
+            try:
+                fallback_context = cls._retrieve_context(user_query, db)
+            except Exception:
+                pass
             return {
-                "response": f"AI Assistant error: Model execution failed. Fallback details below.\n\n{cls._get_mocked_nlp_response(user_query, retrieved_data_context)}",
-                "retrieved_context": retrieved_data_context,
+                "response": f"AI Assistant error: Model execution failed. Fallback details below.\n\n{cls._get_mocked_nlp_response(user_query, fallback_context)}",
+                "retrieved_context": fallback_context,
                 "is_mocked": True,
                 "error_detail": str(e)
             }

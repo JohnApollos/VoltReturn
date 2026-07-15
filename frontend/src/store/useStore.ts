@@ -212,7 +212,7 @@ export const useStore = create<VoltReturnState>()(
           const data = await res.json();
           
           set((state) => ({
-            aiConversation: [...state.aiConversation, { role: 'assistant', content: data.answer }],
+            aiConversation: [...state.aiConversation, { role: 'assistant', content: data.response || data.answer || 'No response details returned.' }],
             aiLoading: false
           }));
         } catch (e: any) {
