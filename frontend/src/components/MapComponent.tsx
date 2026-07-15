@@ -13,7 +13,7 @@ export const MapComponent: React.FC = () => {
 
   // Load existing swap stations coordinates on component mount
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/v1/infrastructure/recommendations?num_stations=1')
+    fetch('http://127.0.0.1:8000/api/v1/infrastructure/recommend?num_stations=1')
       .then((res) => res.json())
       .then((data) => {
         // We can fetch the raw list from the backend if needed, or parse a sample

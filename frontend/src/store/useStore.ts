@@ -144,7 +144,7 @@ export const useStore = create<VoltReturnState>()(
           
           // 2. Fetch K-Means GIS recommendations
           const gisRes = await fetch(
-            `${BACKEND_URL}/api/v1/infrastructure/recommendations?num_stations=${num_stations}&gap_threshold_km=5.0`
+            `${BACKEND_URL}/api/v1/infrastructure/recommend?num_stations=${num_stations}&gap_threshold_km=5.0`
           );
           if (!gisRes.ok) throw new Error('Failed to retrieve GIS recommendations');
           const gisData = await gisRes.json();
