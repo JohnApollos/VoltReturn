@@ -15,10 +15,9 @@ import {
   Scatter,
   ZAxis
 } from 'recharts';
-import { ShieldCheck, TrendingUp, AlertTriangle } from 'lucide-react';
 
 export const FinancialView: React.FC = () => {
-  const { simulationData, portfolioSummary, savedScenarios, budget_kes } = useStore();
+  const { simulationData, savedScenarios } = useStore();
   const [monteCarloChart, setMonteCarloChart] = useState<any[]>([]);
 
   // Generate Monte Carlo normal probability bins dynamically if backend doesn't have it seeded
@@ -91,10 +90,10 @@ export const FinancialView: React.FC = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
       
       {/* 1. Monte Carlo NPV Probability Fan Chart */}
-      <div className="glass-panel p-5 rounded-lg flex flex-col justify-between h-[360px]">
+      <div className="bg-white border border-[#d8d2c4] p-5 rounded flex flex-col justify-between h-[360px]">
         <div>
-          <h3 className="text-white font-bold text-sm tracking-wide uppercase mb-1">Monte Carlo NPV Outcomes</h3>
-          <p className="text-[10px] text-slate-500 mb-4 uppercase tracking-wider">
+          <h3 className="text-slate-900 font-bold text-sm tracking-wide uppercase mb-1">Monte Carlo NPV Outcomes</h3>
+          <p className="text-[10px] text-[#5c564c] mb-4 uppercase tracking-wider">
             Probability distribution curves based on 1,000 iterations of randomized variables.
           </p>
         </div>
@@ -102,17 +101,17 @@ export const FinancialView: React.FC = () => {
         <div className="flex-1 w-full mt-2">
           <ResponsiveContainer width="100%" height="90%">
             <AreaChart data={monteCarloChart} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
-              <XAxis dataKey="npv_bin" stroke="#475569" fontSize={9} tickLine={false} />
-              <YAxis stroke="#475569" fontSize={9} tickLine={false} hide={true} />
+              <XAxis dataKey="npv_bin" stroke="#5c564c" fontSize={9} tickLine={false} />
+              <YAxis stroke="#5c564c" fontSize={9} tickLine={false} hide={true} />
               <Tooltip 
-                contentStyle={{ background: '#0b0f19', border: '1px solid #1e293b', borderRadius: '4px' }}
-                labelClassName="text-slate-400 font-mono text-xs"
+                contentStyle={{ background: '#ffffff', border: '1px solid #d8d2c4', borderRadius: '4px' }}
+                labelClassName="text-slate-950 font-mono text-xs font-bold"
               />
               <Area 
                 type="monotone" 
                 dataKey="frequency" 
-                stroke="#10b981" 
-                fill="rgba(16, 185, 129, 0.15)" 
+                stroke="#15803d" 
+                fill="rgba(21, 128, 61, 0.15)" 
                 strokeWidth={2}
                 name="Frequency Density"
               />
@@ -120,17 +119,17 @@ export const FinancialView: React.FC = () => {
           </ResponsiveContainer>
         </div>
         
-        <div className="flex justify-between text-[10px] text-slate-400 border-t border-[#1e293b] pt-3">
-          <span className="text-emerald-400 font-semibold">91.4% Probability of Positive Return</span>
+        <div className="flex justify-between text-[10px] text-[#5c564c] border-t border-[#d8d2c4] pt-3">
+          <span className="text-[#15803d] font-bold">91.4% Probability of Positive Return</span>
           <span>Volatility Risk: Moderate</span>
         </div>
       </div>
 
       {/* 2. DCF Cash Flow Trajectory */}
-      <div className="glass-panel p-5 rounded-lg flex flex-col justify-between h-[360px]">
+      <div className="bg-white border border-[#d8d2c4] p-5 rounded flex flex-col justify-between h-[360px]">
         <div>
-          <h3 className="text-white font-bold text-sm tracking-wide uppercase mb-1">Amortization Waterfall</h3>
-          <p className="text-[10px] text-slate-500 mb-4 uppercase tracking-wider">
+          <h3 className="text-slate-900 font-bold text-sm tracking-wide uppercase mb-1">Amortization Waterfall</h3>
+          <p className="text-[10px] text-[#5c564c] mb-4 uppercase tracking-wider">
             Initial Capital expenditure (CapEx) against year 1-5 net cash flows (KES Millions).
           </p>
         </div>
@@ -138,19 +137,19 @@ export const FinancialView: React.FC = () => {
         <div className="flex-1 w-full mt-2">
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={waterfallData} margin={{ top: 10, right: 10, left: 10, bottom: 5 }}>
-              <CartesianGrid stroke="#1e293b" vertical={false} />
-              <XAxis dataKey="name" stroke="#475569" fontSize={9} tickLine={false} />
-              <YAxis stroke="#475569" fontSize={9} tickLine={false} />
+              <CartesianGrid stroke="#eae4d5" vertical={false} />
+              <XAxis dataKey="name" stroke="#5c564c" fontSize={9} tickLine={false} />
+              <YAxis stroke="#5c564c" fontSize={9} tickLine={false} />
               <Tooltip 
-                contentStyle={{ background: '#0b0f19', border: '1px solid #1e293b', borderRadius: '4px' }}
-                labelClassName="text-slate-400 font-mono text-xs"
+                contentStyle={{ background: '#ffffff', border: '1px solid #d8d2c4', borderRadius: '4px' }}
+                labelClassName="text-slate-950 font-mono text-xs font-bold"
               />
               <Bar dataKey="display_amount" name="Net Cash Flow (KES Millions)">
                 {waterfallData.map((entry: any, index: number) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={entry.isOutflow ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)'}
-                    stroke={entry.isOutflow ? '#ef4444' : '#10b981'}
+                    fill={entry.isOutflow ? 'rgba(239, 68, 68, 0.25)' : 'rgba(21, 128, 61, 0.25)'}
+                    stroke={entry.isOutflow ? '#ef4444' : '#15803d'}
                     strokeWidth={1.5}
                   />
                 ))}
@@ -159,17 +158,17 @@ export const FinancialView: React.FC = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="flex justify-between text-[10px] text-slate-400 border-t border-[#1e293b] pt-3">
+        <div className="flex justify-between text-[10px] text-[#5c564c] border-t border-[#d8d2c4] pt-3">
           <span>Hurdle Break-Even: Year {simulationData?.payback_period_years || '0.0'}</span>
           <span>ROI Payback: Amortized</span>
         </div>
       </div>
 
       {/* 3. Sensitivity Tornado Analysis */}
-      <div className="glass-panel p-5 rounded-lg flex flex-col justify-between h-[360px]">
+      <div className="bg-white border border-[#d8d2c4] p-5 rounded flex flex-col justify-between h-[360px]">
         <div>
-          <h3 className="text-white font-bold text-sm tracking-wide uppercase mb-1">Sensitivity Analysis (NPV Elasticity)</h3>
-          <p className="text-[10px] text-slate-500 mb-4 uppercase tracking-wider">
+          <h3 className="text-slate-900 font-bold text-sm tracking-wide uppercase mb-1">Sensitivity Analysis (NPV Elasticity)</h3>
+          <p className="text-[10px] text-[#5c564c] mb-4 uppercase tracking-wider">
             Ranks variables by impact on NPV outcomes (KES Millions) under standard $\pm$25% swings.
           </p>
         </div>
@@ -181,29 +180,29 @@ export const FinancialView: React.FC = () => {
               layout="vertical"
               margin={{ top: 10, right: 10, left: 20, bottom: 5 }}
             >
-              <CartesianGrid stroke="#1e293b" horizontal={false} />
-              <XAxis type="number" stroke="#475569" fontSize={9} tickLine={false} />
-              <YAxis dataKey="metric" type="category" stroke="#475569" fontSize={8} width={130} tickLine={false} />
+              <CartesianGrid stroke="#eae4d5" horizontal={false} />
+              <XAxis type="number" stroke="#5c564c" fontSize={9} tickLine={false} />
+              <YAxis dataKey="metric" type="category" stroke="#5c564c" fontSize={8} width={130} tickLine={false} />
               <Tooltip 
-                contentStyle={{ background: '#0b0f19', border: '1px solid #1e293b', borderRadius: '4px' }}
-                labelClassName="text-slate-400 font-mono text-xs"
+                contentStyle={{ background: '#ffffff', border: '1px solid #d8d2c4', borderRadius: '4px' }}
+                labelClassName="text-slate-950 font-mono text-xs font-bold"
               />
               <Bar dataKey="negative_swing" fill="rgba(239, 68, 68, 0.25)" stroke="#ef4444" strokeWidth={1.5} name="Negative NPV swing" />
-              <Bar dataKey="positive_swing" fill="rgba(16, 185, 129, 0.25)" stroke="#10b981" strokeWidth={1.5} name="Positive NPV swing" />
+              <Bar dataKey="positive_swing" fill="rgba(21, 128, 61, 0.25)" stroke="#15803d" strokeWidth={1.5} name="Positive NPV swing" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="text-[10px] text-slate-500 border-t border-[#1e293b] pt-3 leading-relaxed">
+        <div className="text-[10px] text-[#5c564c] border-t border-[#d8d2c4] pt-3 leading-relaxed">
           *NPV baseline: KES {((simulationData?.expected_npv_kes || 0) / 1000000).toFixed(1)}M. Borrower default rate holds the greatest structural risk.
         </div>
       </div>
 
       {/* 4. Risk-Return bubble matrix */}
-      <div className="glass-panel p-5 rounded-lg flex flex-col justify-between h-[360px]">
+      <div className="bg-white border border-[#d8d2c4] p-5 rounded flex flex-col justify-between h-[360px]">
         <div>
-          <h3 className="text-white font-bold text-sm tracking-wide uppercase mb-1">Portfolio Risk-Return Matrix</h3>
-          <p className="text-[10px] text-slate-500 mb-4 uppercase tracking-wider">
+          <h3 className="text-slate-900 font-bold text-sm tracking-wide uppercase mb-1">Portfolio Risk-Return Matrix</h3>
+          <p className="text-[10px] text-[#5c564c] mb-4 uppercase tracking-wider">
             Plots scenarios across risk (expected default rate %) vs. return (IRR %). Bubble size is CapEx.
           </p>
         </div>
@@ -211,20 +210,20 @@ export const FinancialView: React.FC = () => {
         <div className="flex-1 w-full mt-2">
           <ResponsiveContainer width="100%" height="90%">
             <ScatterChart margin={{ top: 15, right: 20, bottom: 10, left: 10 }}>
-              <CartesianGrid stroke="#1e293b" />
-              <XAxis type="number" dataKey="risk" name="Risk (Default %)" unit="%" stroke="#475569" fontSize={9} />
-              <YAxis type="number" dataKey="return" name="Return (IRR %)" unit="%" stroke="#475569" fontSize={9} />
+              <CartesianGrid stroke="#eae4d5" />
+              <XAxis type="number" dataKey="risk" name="Risk (Default %)" unit="%" stroke="#5c564c" fontSize={9} />
+              <YAxis type="number" dataKey="return" name="Return (IRR %)" unit="%" stroke="#5c564c" fontSize={9} />
               <ZAxis type="number" dataKey="z" range={[60, 400]} />
               <Tooltip 
-                contentStyle={{ background: '#0b0f19', border: '1px solid #1e293b', borderRadius: '4px' }}
+                contentStyle={{ background: '#ffffff', border: '1px solid #d8d2c4', borderRadius: '4px' }}
                 cursor={{ strokeDasharray: '3 3' }}
               />
-              <Scatter name="Scenario Scopes" data={scatterData} fill="#10b981">
+              <Scatter name="Scenario Scopes" data={scatterData} fill="#15803d">
                 {scatterData.map((entry: any, index: number) => (
                   <Cell 
                     key={`cell-${index}`} 
-                    fill={entry.risk > 5.0 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(16, 185, 129, 0.4)'} 
-                    stroke={entry.risk > 5.0 ? '#ef4444' : '#10b981'}
+                    fill={entry.risk > 5.0 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(21, 128, 61, 0.4)'} 
+                    stroke={entry.risk > 5.0 ? '#ef4444' : '#15803d'}
                     strokeWidth={1.5}
                   />
                 ))}
@@ -233,8 +232,8 @@ export const FinancialView: React.FC = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="flex justify-between text-[10px] text-slate-500 border-t border-[#1e293b] pt-3">
-          <span className="text-slate-400">Efficient Frontier target: Top-Left (Low Risk, High Return)</span>
+        <div className="flex justify-between text-[10px] text-[#5c564c] border-t border-[#d8d2c4] pt-3">
+          <span className="text-[#5c564c]">Efficient Frontier target: Top-Left (Low Risk, High Return)</span>
           <span>Bubbles: {savedScenarios.length || 3} Loaded</span>
         </div>
       </div>

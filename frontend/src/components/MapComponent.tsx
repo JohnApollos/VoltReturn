@@ -9,7 +9,7 @@ const NAIROBI_CENTER: [number, number] = [-1.2921, 36.8219];
 export const MapComponent: React.FC = () => {
   const { gisData } = useStore();
   const [existingStations, setExistingStations] = useState<any[]>([]);
-  const [mapLayer, setMapLayer] = useState<'dark' | 'light'>('dark');
+  const [mapLayer, setMapLayer] = useState<'dark' | 'light'>('light');
 
   // Load existing swap stations coordinates on component mount
   useEffect(() => {
@@ -60,26 +60,26 @@ export const MapComponent: React.FC = () => {
   }, []);
 
   return (
-    <div className="w-full h-full relative rounded-lg overflow-hidden border border-[#1e293b]">
+    <div className="w-full h-full relative rounded overflow-hidden border border-[#d8d2c4]">
       
       {/* Map layer switcher */}
       <div className="absolute top-3 right-3 z-[1000] flex gap-2">
         <button 
-          onClick={() => setMapLayer('dark')}
-          className={`px-3 py-1.5 text-xs font-bold rounded cursor-pointer transition-all border ${
-            mapLayer === 'dark' 
-              ? 'bg-[#0b0f19] border-emerald-500 text-emerald-400' 
-              : 'bg-[#060813] border-[#1e293b] text-slate-400 hover:border-slate-500'
-          }`}
-        >
-          Dark Workspace
-        </button>
-        <button 
           onClick={() => setMapLayer('light')}
           className={`px-3 py-1.5 text-xs font-bold rounded cursor-pointer transition-all border ${
             mapLayer === 'light' 
-              ? 'bg-[#0b0f19] border-emerald-500 text-emerald-400' 
-              : 'bg-[#060813] border-[#1e293b] text-slate-400 hover:border-slate-500'
+              ? 'bg-[#15803d] border-[#15803d] text-white' 
+              : 'bg-white border-[#d8d2c4] text-[#5c564c] hover:border-[#111111] hover:bg-slate-50'
+          }`}
+        >
+          Editorial Map
+        </button>
+        <button 
+          onClick={() => setMapLayer('dark')}
+          className={`px-3 py-1.5 text-xs font-bold rounded cursor-pointer transition-all border ${
+            mapLayer === 'dark' 
+              ? 'bg-[#15803d] border-[#15803d] text-white' 
+              : 'bg-white border-[#d8d2c4] text-[#5c564c] hover:border-[#111111] hover:bg-slate-50'
           }`}
         >
           Satellite
@@ -93,10 +93,10 @@ export const MapComponent: React.FC = () => {
         className="w-full h-full"
       >
         {/* Render base map tiles */}
-        {mapLayer === 'dark' ? (
+        {mapLayer === 'light' ? (
           <TileLayer
             attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
         ) : (
           <TileLayer

@@ -76,16 +76,16 @@ export default function Home() {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col justify-between h-full w-full bg-[#0e1017]">
+    <div className="flex flex-col justify-between h-full w-full bg-[#eae4d5]">
       <div>
         {/* Brand Logo Header */}
-        <div className="p-6 border-b border-[#181b24] flex items-center gap-3">
+        <div className="p-6 border-b border-[#d8d2c4] flex items-center gap-3">
           <img 
             src="/icon-transparent.png" 
             alt="Logo" 
             className="w-8 h-8 object-contain" 
           />
-          <span className="text-white font-extrabold text-lg tracking-wider">VoltReturn</span>
+          <span className="text-slate-900 font-extrabold text-lg tracking-wider">VoltReturn</span>
         </div>
 
         {/* Nav list */}
@@ -99,8 +99,8 @@ export default function Home() {
                 onClick={() => handleNavClick(item.id as any)}
                 className={`w-full py-2.5 px-4 rounded text-xs font-bold uppercase tracking-wider flex items-center gap-3 transition-all cursor-pointer ${
                   isActive 
-                    ? 'bg-emerald-500 text-slate-950 font-bold' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-900/40'
+                    ? 'bg-[#15803d] text-white font-bold' 
+                    : 'text-[#5c564c] hover:text-slate-900 hover:bg-[#dfd9cc]'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -112,10 +112,10 @@ export default function Home() {
       </div>
 
       {/* Exit Workspace Button */}
-      <div className="p-4 border-t border-[#181b24]">
+      <div className="p-4 border-t border-[#d8d2c4]">
         <button
           onClick={() => handleNavClick('landing')}
-          className="w-full py-2.5 px-4 bg-slate-950/40 border border-[#181b24] hover:border-red-500/50 hover:bg-red-500/10 text-slate-400 hover:text-red-400 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          className="w-full py-2.5 px-4 bg-[#f0ebe0] border border-[#d8d2c4] hover:border-red-600 hover:bg-red-50 text-[#5c564c] hover:text-red-600 rounded text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Exit Platform
@@ -125,24 +125,24 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-[#090a0f] text-slate-200 flex overflow-hidden select-none font-sans relative">
+    <div className="min-h-screen bg-[#f3ebd9] text-[#111111] flex overflow-hidden select-none font-sans relative">
       
       {/* 1. DESKTOP SIDEBAR NAVIGATION (Hidden in Board Mode or Mobile) */}
       {!isBoardMode && (
-        <aside className="hidden lg:flex w-64 bg-[#0e1017] border-r border-[#181b24] flex-col shrink-0 z-20">
+        <aside className="hidden lg:flex w-64 bg-[#eae4d5] border-r border-[#d8d2c4] flex-col shrink-0 z-20">
           <SidebarContent />
         </aside>
       )}
 
       {/* 2. MOBILE DRAWER OVERLAY SIDEBAR */}
       {mobileMenuOpen && !isBoardMode && (
-        <div className="fixed inset-0 z-50 flex lg:hidden bg-slate-950/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex lg:hidden bg-slate-950/60 backdrop-blur-xs">
           <div className="w-64 h-full relative shrink-0">
             <SidebarContent />
             {/* Close button inside drawer */}
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-4 right-[-48px] p-2 bg-[#0e1017] border border-[#181b24] text-slate-400 hover:text-white rounded"
+              className="absolute top-4 right-[-48px] p-2 bg-[#eae4d5] border border-[#d8d2c4] text-[#5c564c] hover:text-[#111111] rounded cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -156,14 +156,14 @@ export default function Home() {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         
         {/* Top Header Nav */}
-        <header className="h-16 bg-[#0e1017] border-b border-[#181b24] px-4 md:px-6 flex justify-between items-center z-10 select-none shrink-0">
+        <header className="h-16 bg-white border-b border-[#d8d2c4] px-4 md:px-6 flex justify-between items-center z-10 select-none shrink-0">
           <div className="flex items-center gap-3">
             
             {/* Mobile hamburger menu toggle */}
             {!isBoardMode && (
               <button 
                 onClick={() => setMobileMenuOpen(true)}
-                className="lg:hidden p-2 text-slate-400 hover:text-white border border-[#181b24] rounded-md cursor-pointer hover:bg-slate-900/40"
+                className="lg:hidden p-2 text-[#5c564c] hover:text-slate-950 border border-[#d8d2c4] rounded hover:bg-[#eae4d5]/50 cursor-pointer"
               >
                 <Menu className="w-5 h-5" />
               </button>
@@ -177,7 +177,7 @@ export default function Home() {
               />
             )}
             
-            <h2 className="text-xs md:text-sm font-bold text-white tracking-wide uppercase truncate max-w-[150px] md:max-w-none">
+            <h2 className="text-xs md:text-sm font-bold text-slate-950 tracking-wide uppercase truncate max-w-[150px] md:max-w-none">
               {isBoardMode ? 'VoltReturn AI Platform' : `Scenario: KES ${budget_kes/1000000}M / ${num_stations} BSS`}
             </h2>
           </div>
@@ -185,7 +185,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             
             {/* Global Confidence Level */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded text-xs font-semibold select-none">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded text-xs font-semibold select-none">
               <Sparkles className="w-3.5 h-3.5 fill-current" />
               Decision Index: 91% Confidence
             </div>
@@ -193,17 +193,17 @@ export default function Home() {
             {/* Toggle Presentation Mode */}
             <button
               onClick={toggleBoardMode}
-              className="p-2 border border-[#181b24] text-slate-400 hover:text-white rounded hover:bg-slate-900/40 cursor-pointer transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
+              className="p-2 border border-[#d8d2c4] text-[#5c564c] hover:text-slate-950 rounded hover:bg-[#eae4d5]/50 cursor-pointer transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-wider"
               title={isBoardMode ? "Exit Presentation Mode" : "Board Presentation Mode"}
             >
               {isBoardMode ? (
                 <>
-                  <Minimize2 className="w-4 h-4 text-emerald-400" />
+                  <Minimize2 className="w-4 h-4 text-emerald-700" />
                   <span className="hidden sm:inline">Exit Presentation</span>
                 </>
               ) : (
                 <>
-                  <Maximize2 className="w-4 h-4 text-emerald-400" />
+                  <Maximize2 className="w-4 h-4 text-emerald-700" />
                   <span className="hidden sm:inline">Presentation</span>
                 </>
               )}
@@ -212,7 +212,7 @@ export default function Home() {
         </header>
 
         {/* View Switcher Container */}
-        <div className="flex-1 overflow-y-auto bg-[#090a0f] relative select-none">
+        <div className="flex-1 overflow-y-auto bg-[#f3ebd9] relative select-none">
           {activeView === 'dashboard' && <DashboardView />}
           {activeView === 'scenarios' && <DashboardView />} {/* Scenario Config uses Dashboard slider panel */}
           {activeView === 'gis' && <GisWorkspaceView />}

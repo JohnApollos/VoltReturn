@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #090a0f;
-  --foreground: #f1f5f9;
+  --background: #f3ebd9;
+  --foreground: #111111;
   
-  --color-brand-dark: #090a0f;
-  --color-brand-panel: #0e1017;
-  --color-brand-border: #181b24;
-  --color-brand-green: #10b981;
-  --color-brand-blue: #3b82f6;
-  --color-brand-accent: #f59e0b;
+  --color-brand-dark: #f3ebd9;
+  --color-brand-panel: #ffffff;
+  --color-brand-border: #d8d2c4;
+  --color-brand-green: #15803d;
+  --color-brand-blue: #1a68d1;
+  --color-brand-accent: #ea580c;
 }
 
 body {
@@ -25,71 +25,71 @@ body {
   height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #090a0f;
+  background: #f3ebd9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #181b24;
+  background: #d8d2c4;
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #15803d;
 }
 
-/* Leaflet Map Custom dark styles */
+/* Leaflet Map Custom light styles matching warm theme */
 .leaflet-container {
-  background: #0e1017 !important;
+  background: #fcfaf7 !important;
   font-family: inherit;
 }
 
 .leaflet-bar {
-  border: 1px solid #181b24 !important;
+  border: 1px solid #d8d2c4 !important;
   box-shadow: none !important;
 }
 
 .leaflet-bar a {
-  background-color: #0e1017 !important;
-  color: #f1f5f9 !important;
-  border-bottom: 1px solid #181b24 !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-bottom: 1px solid #d8d2c4 !important;
 }
 
 .leaflet-bar a:hover {
-  background-color: #10b981 !important;
-  color: #090a0f !important;
+  background-color: #15803d !important;
+  color: #ffffff !important;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #0e1017 !important;
-  border: 1px solid #181b24;
-  color: #f1f5f9 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
-  border-radius: 6px !important;
+  background: #ffffff !important;
+  border: 1px solid #d8d2c4;
+  color: #111111 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 4px !important;
 }
 
 .leaflet-popup-tip {
-  background: #0e1017 !important;
-  border: 1px solid #181b24;
+  background: #ffffff !important;
+  border: 1px solid #d8d2c4;
 }
 
-/* Clean Dashboard Cards (Stripe / Linear.app style) */
+/* Clean Dashboard Cards (Tech-ish style) */
 .glass-panel {
-  background: #0e1017;
-  border: 1px solid #181b24;
-  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #d8d2c4;
+  border-radius: 4px;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .glass-panel:hover {
-  border-color: #262a36;
-  background-color: #11141d;
+  border-color: #111111;
+  background-color: #fdfcf9;
 }
 
 /* Active status indicator */
 .status-dot-active {
-  background-color: #10b981;
+  background-color: #15803d;
 }
 
 .status-dot-warning {
-  background-color: #f59e0b;
+  background-color: #ea580c;
 }
 
 .status-dot-danger {
