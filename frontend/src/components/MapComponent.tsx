@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import { useStore, RecommendedStation } from '../store/useStore';
+import { useStore, RecommendedStation, BACKEND_URL } from '../store/useStore';
 
 // Nairobi center coordinates
 const NAIROBI_CENTER: [number, number] = [-1.2921, 36.8219];
@@ -13,10 +13,7 @@ export const MapComponent: React.FC = () => {
 
   // Load existing swap stations coordinates on component mount
   useEffect(() => {
-    const apiPrefix = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://127.0.0.1:8000' 
-      : '';
-    fetch(`${apiPrefix}/api/v1/infrastructure/recommend?num_stations=1`)
+    fetch(`${BACKEND_URL}/api/v1/infrastructure/recommend?num_stations=1`)
       .then((res) => res.json())
       .then((data) => {
         // We can fetch the raw list from the backend if needed, or parse a sample

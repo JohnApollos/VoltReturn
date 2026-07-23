@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStore } from '../../store/useStore';
+import { useStore, BACKEND_URL } from '../../store/useStore';
 import { Download, FileText, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 export const BoardMemoView: React.FC = () => {
@@ -15,7 +15,7 @@ export const BoardMemoView: React.FC = () => {
   } = useStore();
 
   const handleDownloadPdf = () => {
-    const url = `http://127.0.0.1:8000/api/v1/reports/board-memo?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${default_rate_pct}`;
+    const url = `${BACKEND_URL}/api/v1/reports/board-memo?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${default_rate_pct}`;
     window.open(url, '_blank');
   };
 

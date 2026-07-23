@@ -18,9 +18,23 @@ class FleetIntelligenceService:
     """Computes battery State of Health (SoH) and Remaining Useful Life (RUL) using Weibull survival curves."""
     
     @staticmethod
-    def get_fleet_summary() -> Dict[str, Any]:
+    def _get_parquet_path() -> str:
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
+        if os.environ.get("VERCEL"):
+            tmp_path = "/tmp/battery_telemetry.parquet"
+            if not os.path.exists(tmp_path):
+                import shutil
+                try:
+                    shutil.copy2(parquet_path, tmp_path)
+                except Exception as e:
+                    logger.error("Failed to copy battery_telemetry.parquet to /tmp: %s", e)
+            parquet_path = tmp_path
+        return parquet_path
+
+    @staticmethod
+    def get_fleet_summary() -> Dict[str, Any]:
+        parquet_path = FleetIntelligenceService._get_parquet_path()
         
         conn = get_duckdb_conn()
         try:
@@ -96,8 +110,7 @@ class FleetIntelligenceService:
 
     @staticmethod
     def get_battery_profile(battery_id: str) -> Dict[str, Any]:
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-        parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
+        parquet_path = FleetIntelligenceService._get_parquet_path()
         
         conn = get_duckdb_conn()
         try:
@@ -164,8 +177,7 @@ class FleetIntelligenceService:
     @staticmethod
     def ingest_telemetry(records: List[Dict[str, Any]], db: Session) -> Dict[str, Any]:
         """Appends new telemetry logs to the Parquet database and registers a data quality audit."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
+        parquet_path = FleetIntelligenceService._get_parquet_path()
         
         # Convert records to DataFrame
         df_new = pd.DataFrame(records)

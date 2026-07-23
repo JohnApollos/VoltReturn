@@ -41,10 +41,24 @@ class RiderIntelligenceService:
         self.is_default_trained = False
         self.is_churn_trained = False
         
+    @staticmethod
+    def _get_data_path(custom_data_path: str = "data/rider_loans.csv") -> str:
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        full_data_path = os.path.join(project_root, custom_data_path).replace("\\", "/")
+        if os.environ.get("VERCEL"):
+            tmp_path = "/tmp/rider_loans.csv"
+            if not os.path.exists(tmp_path):
+                import shutil
+                try:
+                    shutil.copy2(full_data_path, tmp_path)
+                except Exception as e:
+                    logger.error("Failed to copy rider_loans.csv to /tmp: %s", e)
+            full_data_path = tmp_path
+        return full_data_path
+
     def train_models(self, db: Session, data_path: str = "data/rider_loans.csv") -> Dict[str, Any]:
         """Loads simulated rider profiles, trains models, and updates Model Governance registry."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        full_data_path = os.path.join(project_root, data_path)
+        full_data_path = RiderIntelligenceService._get_data_path(data_path)
         
         if not os.path.exists(full_data_path):
             raise FileNotFoundError(f"Rider loan data not found at {full_data_path}. Simulate it first.")
@@ -129,8 +143,7 @@ class RiderIntelligenceService:
 
     def evaluate_portfolio(self, db: Session, new_distances: Optional[np.ndarray] = None) -> Dict[str, Any]:
         """Evaluates overall credit exposure and rider churn rates across the portfolio."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        data_path = os.path.join(project_root, "data/rider_loans.csv")
+        data_path = RiderIntelligenceService._get_data_path("data/rider_loans.csv")
         
         if not os.path.exists(data_path):
             raise FileNotFoundError(f"Rider loan data not found at {data_path}.")
@@ -174,8 +187,7 @@ class RiderIntelligenceService:
         
     def get_rider_cohort(self) -> List[Dict[str, Any]]:
         """Loads a slice of simulated riders for dashboard mapping."""
-        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-        data_path = os.path.join(project_root, "data/rider_loans.csv")
+        data_path = RiderIntelligenceService._get_data_path("data/rider_loans.csv")
         if not os.path.exists(data_path):
             return []
         df = pd.read_csv(data_path)

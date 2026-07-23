@@ -17,10 +17,14 @@ def generate_fleet_telemetry(
     """
     np.random.seed(random_seed)
     
-    # Anchor path relative to project root
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-    full_output_path = os.path.join(project_root, output_path)
-    os.makedirs(os.path.dirname(full_output_path), exist_ok=True)
+    # Anchor path relative to project root (backend)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    
+    if os.environ.get("VERCEL"):
+        full_output_path = "/tmp/battery_telemetry.parquet"
+    else:
+        full_output_path = os.path.join(project_root, output_path)
+        os.makedirs(os.path.dirname(full_output_path), exist_ok=True)
     
     # Physics constants for capacity fade
     R = 8.314  # Gas constant

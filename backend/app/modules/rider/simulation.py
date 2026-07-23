@@ -23,12 +23,16 @@ def generate_rider_loans(
     Dynamically maps distance to the nearest station based on our geocoded 66-station dataset.
     """
     np.random.seed(random_seed)
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     
     # Load subcounties and existing stations
     subcounty_path = os.path.join(project_root, "data", "nairobi_subcounties.csv")
     stations_path = os.path.join(project_root, "data", "existing_stations.csv")
-    full_output_path = os.path.join(project_root, output_path)
+    
+    if os.environ.get("VERCEL"):
+        full_output_path = "/tmp/rider_loans.csv"
+    else:
+        full_output_path = os.path.join(project_root, output_path)
     
     if not os.path.exists(subcounty_path) or not os.path.exists(stations_path):
         raise FileNotFoundError("Prerequisite data files for demographics or stations are missing!")
