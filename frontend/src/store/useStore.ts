@@ -145,19 +145,10 @@ export const useStore = create<VoltReturnState>()(
         const thisVersion = currentRequestVersion;
         
         set({ isLoading: true, error: null });
-        const { budget_kes, num_stations, horizon_years, risk_appetite, tariff_type, default_rate_pct } = get();
+        const { budget_kes, num_stations, horizon_years, risk_appetite, tariff_type } = get();
         
         try {
-          // 1. Fetch DCF financial simulation
-          const simRes = await fetch(
-            `${BACKEND_URL}/api/v1/finance/simulate?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${default_rate_pct}`
-          );
-          if (!simRes.ok) throw new Error('Failed to run DCF simulation');
-          const simData = await simRes.json();
-          
-          if (thisVersion !== currentRequestVersion) return;
-
-          // 2. Fetch K-Means GIS recommendations
+          // 1. Fetch K-Means GIS recommendations
           const gisRes = await fetch(
             `${BACKEND_URL}/api/v1/infrastructure/recommend?num_stations=${num_stations}&gap_threshold_km=5.0`
           );
@@ -166,15 +157,28 @@ export const useStore = create<VoltReturnState>()(
           
           if (thisVersion !== currentRequestVersion) return;
 
-          // 3. Fetch Fleet degradation survival summary
-          const fleetRes = await fetch(`${BACKEND_URL}/api/v1/fleet/summary`);
-          const fleetSummary = fleetRes.ok ? await fleetRes.json() : null;
+          // 2. Fetch Portfolio default and churn summary passing num_stations
+          const portRes = await fetch(`${BACKEND_URL}/api/v1/rider/portfolio-summary?num_stations=${num_stations}`);
+          if (!portRes.ok) throw new Error('Failed to load portfolio metrics');
+          const portfolioSummary = await portRes.json();
           
           if (thisVersion !== currentRequestVersion) return;
 
-          // 4. Fetch Portfolio default and churn summary
-          const portRes = await fetch(`${BACKEND_URL}/api/v1/rider/portfolio-summary`);
-          const portfolioSummary = portRes.ok ? await portRes.json() : null;
+          // Use the dynamic calculated default rate for the DCF model
+          const dynamicDefaultRate = portfolioSummary.expected_default_rate_pct;
+
+          // 3. Fetch DCF financial simulation with the dynamically calculated default rate
+          const simRes = await fetch(
+            `${BACKEND_URL}/api/v1/finance/simulate?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${dynamicDefaultRate}`
+          );
+          if (!simRes.ok) throw new Error('Failed to run DCF simulation');
+          const simData = await simRes.json();
+          
+          if (thisVersion !== currentRequestVersion) return;
+
+          // 4. Fetch Fleet degradation survival summary
+          const fleetRes = await fetch(`${BACKEND_URL}/api/v1/fleet/summary`);
+          const fleetSummary = fleetRes.ok ? await fleetRes.json() : null;
           
           if (thisVersion !== currentRequestVersion) return;
 
@@ -183,6 +187,7 @@ export const useStore = create<VoltReturnState>()(
             gisData: gisData,
             fleetSummary: fleetSummary,
             portfolioSummary: portfolioSummary,
+            default_rate_pct: dynamicDefaultRate, // update store slider default value state
             isLoading: false
           });
         } catch (e: any) {

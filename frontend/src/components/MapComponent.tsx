@@ -117,9 +117,9 @@ export const MapComponent: React.FC = () => {
           >
             <Popup>
               <div className="text-xs">
-                <div className="font-bold text-white mb-1">{st.name}</div>
-                <div className="text-[10px] text-slate-400">Status: Online | Grid-connected</div>
-                <div className="text-[10px] text-slate-400">Lat/Lon: {st.latitude.toFixed(4)}, {st.longitude.toFixed(4)}</div>
+                <div className="font-bold text-slate-900 mb-1">{st.name}</div>
+                <div className="text-[10px] text-[#5c564c]">Status: Online | Grid-connected</div>
+                <div className="text-[10px] text-[#5c564c]">Lat/Lon: {st.latitude.toFixed(4)}, {st.longitude.toFixed(4)}</div>
               </div>
             </Popup>
           </CircleMarker>
@@ -155,25 +155,25 @@ export const MapComponent: React.FC = () => {
             >
               <Popup>
                 <div className="text-xs p-1 select-none">
-                  <div className="font-extrabold text-emerald-400 text-sm mb-1 uppercase tracking-wide">Proposed Station #{idx + 1}</div>
-                  <div className="font-semibold text-white mb-2">{rec.subcounty} Centroid</div>
+                  <div className="font-extrabold text-[#15803d] text-sm mb-1 uppercase tracking-wide">Proposed Station #{idx + 1}</div>
+                  <div className="font-semibold text-slate-900 mb-2">{rec.subcounty} Centroid</div>
                   
-                  <div className="flex flex-col gap-1 border-t border-[#1e293b] pt-2 mt-2">
+                  <div className="flex flex-col gap-1 border-t border-[#d8d2c4] pt-2 mt-2">
                     <div className="flex justify-between gap-6 text-[10px]">
-                      <span className="text-slate-400">Demand Score:</span>
-                      <span className="text-slate-200 font-semibold">{rec.rider_demand_score}/100</span>
+                      <span className="text-[#5c564c]">Demand Score:</span>
+                      <span className="text-slate-900 font-semibold">{rec.rider_demand_score}/100</span>
                     </div>
                     <div className="flex justify-between gap-6 text-[10px]">
-                      <span className="text-slate-400">Grid Stability:</span>
-                      <span className="text-slate-200 font-semibold">{rec.grid_stability_score}/100</span>
+                      <span className="text-[#5c564c]">Grid Stability:</span>
+                      <span className="text-slate-900 font-semibold">{rec.grid_stability_score}/100</span>
                     </div>
                     <div className="flex justify-between gap-6 text-[10px]">
-                      <span className="text-slate-400">Overall Viability:</span>
-                      <span className="text-emerald-400 font-bold">{rec.overall_viability_score}/100</span>
+                      <span className="text-[#5c564c]">Overall Viability:</span>
+                      <span className="text-[#15803d] font-bold">{rec.overall_viability_score}/100</span>
                     </div>
                     <div className="flex justify-between gap-6 text-[10px]">
-                      <span className="text-slate-400">Nearest Station:</span>
-                      <span className="text-slate-200">{rec.distance_to_existing_km.toFixed(1)} km</span>
+                      <span className="text-[#5c564c]">Nearest Station:</span>
+                      <span className="text-slate-900">{rec.distance_to_existing_km.toFixed(1)} km</span>
                     </div>
                   </div>
                 </div>

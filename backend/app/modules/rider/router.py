@@ -12,10 +12,46 @@ router = APIRouter(prefix="/rider", tags=["Rider Intelligence"])
 service_instance = RiderIntelligenceService()
 
 @router.get("/portfolio-summary")
-def get_portfolio_summary(db: Session = Depends(get_db)):
+def get_portfolio_summary(
+    num_stations: int = Query(0, ge=0),
+    db: Session = Depends(get_db)
+):
     """Computes aggregate default and churn metrics across the active cohort."""
     try:
-        summary = service_instance.evaluate_portfolio(db)
+        if num_stations > 0:
+            import pandas as pd
+            import numpy as np
+            from backend.app.modules.infrastructure.service import NetworkOptimizer
+            from backend.app.modules.rider.simulation import haversine_distance
+            
+            # 1. Recommend station coordinates
+            opt = NetworkOptimizer()
+            opt.load_data(db)
+            recs_df = opt.recommend_stations(num_stations, gap_threshold_km=5.0)
+            
+            # 2. Load rider cohort
+            data_path = RiderIntelligenceService._get_data_path()
+            df = pd.read_csv(data_path)
+            
+            # 3. Compute new distances
+            if not recs_df.empty:
+                new_dists = []
+                for _, rider in df.iterrows():
+                    d_existing = rider["Distance_to_BSS_km"]
+                    d_recs = [
+                        haversine_distance(rider["Latitude"], rider["Longitude"], rec["latitude"], rec["longitude"])
+                        for _, rec in recs_df.iterrows()
+                    ]
+                    min_d_rec = min(d_recs) if d_recs else d_existing
+                    new_dists.append(min(d_existing, min_d_rec))
+                new_distances = np.array(new_dists)
+            else:
+                new_distances = None
+                
+            summary = service_instance.evaluate_portfolio(db, new_distances=new_distances)
+        else:
+            summary = service_instance.evaluate_portfolio(db)
+            
         return summary
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to load portfolio metrics: {str(e)}")
