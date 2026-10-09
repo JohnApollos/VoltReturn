@@ -55,6 +55,8 @@ interface VoltReturnState {
   gisData: RecommendedStation[];
   fleetSummary: any | null;
   portfolioSummary: any | null;
+  monteCarloData: any | null;
+  sensitivityData: any[] | null;
   
   // Saved scenarios (persisted)
   savedScenarios: SavedScenario[];
@@ -115,6 +117,8 @@ export const useStore = create<VoltReturnState>()(
       gisData: [],
       fleetSummary: null,
       portfolioSummary: null,
+      monteCarloData: null,
+      sensitivityData: null,
       
       // Persisted scenarios list
       savedScenarios: [],
@@ -148,17 +152,15 @@ export const useStore = create<VoltReturnState>()(
         const { budget_kes, num_stations, horizon_years, risk_appetite, tariff_type } = get();
         
         try {
-          // 1. Fetch K-Means GIS recommendations
-          const gisRes = await fetch(
-            `${BACKEND_URL}/api/v1/infrastructure/recommend?num_stations=${num_stations}&gap_threshold_km=5.0`
-          );
+          // 1. Fetch K-Means GIS recommendations and Portfolio default summary in parallel
+          const [gisRes, portRes] = await Promise.all([
+            fetch(`${BACKEND_URL}/api/v1/infrastructure/recommend?n_stations=${num_stations}&num_stations=${num_stations}&gap_threshold_km=5.0`),
+            fetch(`${BACKEND_URL}/api/v1/rider/portfolio-summary?num_stations=${num_stations}`)
+          ]);
+
           if (!gisRes.ok) throw new Error('Failed to retrieve GIS recommendations');
           const gisData = await gisRes.json();
           
-          if (thisVersion !== currentRequestVersion) return;
-
-          // 2. Fetch Portfolio default and churn summary passing num_stations
-          const portRes = await fetch(`${BACKEND_URL}/api/v1/rider/portfolio-summary?num_stations=${num_stations}`);
           if (!portRes.ok) throw new Error('Failed to load portfolio metrics');
           const portfolioSummary = await portRes.json();
           
@@ -167,18 +169,25 @@ export const useStore = create<VoltReturnState>()(
           // Use the dynamic calculated default rate for the DCF model
           const dynamicDefaultRate = portfolioSummary.expected_default_rate_pct;
 
-          // 3. Fetch DCF financial simulation with the dynamically calculated default rate
-          const simRes = await fetch(
-            `${BACKEND_URL}/api/v1/finance/simulate?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${dynamicDefaultRate}`
-          );
+          // 2. Fetch DCF financial simulation, Fleet summary, Monte Carlo distribution, and Sensitivity in parallel
+          const [simRes, fleetRes, mcRes, sensRes] = await Promise.all([
+            fetch(
+              `${BACKEND_URL}/api/v1/finance/simulate?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${dynamicDefaultRate}`
+            ),
+            fetch(`${BACKEND_URL}/api/v1/fleet/summary`),
+            fetch(
+              `${BACKEND_URL}/api/v1/finance/monte-carlo?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${dynamicDefaultRate}&simulations=300`
+            ),
+            fetch(
+              `${BACKEND_URL}/api/v1/finance/sensitivity?budget_kes=${budget_kes}&num_stations=${num_stations}&horizon_years=${horizon_years}&risk_appetite=${risk_appetite}&tariff_type=${tariff_type}&default_rate_pct=${dynamicDefaultRate}`
+            )
+          ]);
+
           if (!simRes.ok) throw new Error('Failed to run DCF simulation');
           const simData = await simRes.json();
-          
-          if (thisVersion !== currentRequestVersion) return;
-
-          // 4. Fetch Fleet degradation survival summary
-          const fleetRes = await fetch(`${BACKEND_URL}/api/v1/fleet/summary`);
           const fleetSummary = fleetRes.ok ? await fleetRes.json() : null;
+          const mcData = mcRes.ok ? await mcRes.json() : null;
+          const sensData = sensRes.ok ? await sensRes.json() : null;
           
           if (thisVersion !== currentRequestVersion) return;
 
@@ -187,6 +196,8 @@ export const useStore = create<VoltReturnState>()(
             gisData: gisData,
             fleetSummary: fleetSummary,
             portfolioSummary: portfolioSummary,
+            monteCarloData: mcData,
+            sensitivityData: sensData,
             default_rate_pct: dynamicDefaultRate, // update store slider default value state
             isLoading: false
           });

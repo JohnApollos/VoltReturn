@@ -66,14 +66,29 @@ export const GisWorkspaceView: React.FC = () => {
         </div>
 
         {/* Legend */}
-        <div className="border-t border-[#d8d2c4] pt-4 mt-4 shrink-0 text-[10px] text-[#5c564c] flex flex-col gap-2">
+        <div className="border-t border-[#d8d2c4] pt-3 mt-3 shrink-0 text-[10px] text-[#5c564c] flex flex-col gap-1.5">
+          <div className="font-bold uppercase tracking-wider text-slate-800 text-[9px] mb-1">Network Legend</div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#15803d] border border-white"></span>
-            <span className="text-[#5c564c]">Proposed Swap stations (Teal nodes)</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] border border-white"></span>
+            <span className="text-slate-900 font-semibold">Proposed K-Means Centroids</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-600 border border-white"></span>
-            <span className="text-[#5c564c]">Existing Charging points (Grey circles)</span>
+          <div className="grid grid-cols-2 gap-1 pt-1">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#d97706]"></span>
+              <span>Ampersand</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#0284c7]"></span>
+              <span>Spiro</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#e11d48]"></span>
+              <span>Roam</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#7c3aed]"></span>
+              <span>Zeno</span>
+            </div>
           </div>
         </div>
       </div>

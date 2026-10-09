@@ -4,18 +4,22 @@ import { Leaf, Globe, AlertCircle, TrendingDown } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export const CarbonView: React.FC = () => {
-  const { simulationData, isLoading } = useStore();
+  const { simulationData, horizon_years, isLoading } = useStore();
 
   const getCarbonChartData = () => {
     if (!simulationData) return [];
     const totalTons = simulationData.carbon_offset_tco2 || 0;
-    return [
-      { year: 'Year 1', offset: Math.round(totalTons * 0.15) },
-      { year: 'Year 2', offset: Math.round(totalTons * 0.35) },
-      { year: 'Year 3', offset: Math.round(totalTons * 0.60) },
-      { year: 'Year 4', offset: Math.round(totalTons * 0.85) },
-      { year: 'Year 5', offset: Math.round(totalTons) }
-    ];
+    const years = horizon_years || 5;
+    const points = [];
+    for (let y = 1; y <= years; y++) {
+      // Linear ramp over simulation horizon
+      const fraction = y / years;
+      points.push({
+        year: `Year ${y}`,
+        offset: Math.round(totalTons * fraction)
+      });
+    }
+    return points;
   };
 
   const chartData = getCarbonChartData();

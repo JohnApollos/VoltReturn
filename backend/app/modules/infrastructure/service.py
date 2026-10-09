@@ -57,6 +57,11 @@ def haversine_distance_vectorized(lat1: float, lon1: float, lats2: np.ndarray, l
 class NetworkOptimizer:
     """Handles spatial analysis, coverage gap identification, and facility placement suggestions."""
     
+    _cached_subcounties: Optional[pd.DataFrame] = None
+    _cached_stations: Optional[pd.DataFrame] = None
+    _cached_grid: Optional[pd.DataFrame] = None
+    _cached_quality: Optional[Dict[str, Any]] = None
+
     def __init__(self) -> None:
         self.subcounties: Optional[pd.DataFrame] = None
         self.existing_stations: Optional[pd.DataFrame] = None
@@ -64,17 +69,21 @@ class NetworkOptimizer:
         
     def load_data(
         self, 
-        db: Session,
+        db: Session, 
         subcounty_path: str = "data/nairobi_subcounties.csv", 
         stations_path: str = "data/existing_stations.csv"
     ) -> Dict[str, Any]:
-        """Loads spatial datasets, runs Data Quality checks, and compiles search grids.
-        
-        Args:
-            db (Session): Database session for logging data quality scores.
-            subcounty_path (str): Relative subcounties path.
-            stations_path (str): Relative swap stations path.
-        """
+        """Loads spatial datasets, runs Data Quality checks, and compiles search grids with in-memory caching."""
+        if (
+            NetworkOptimizer._cached_subcounties is not None
+            and NetworkOptimizer._cached_stations is not None
+            and NetworkOptimizer._cached_grid is not None
+        ):
+            self.subcounties = NetworkOptimizer._cached_subcounties.copy()
+            self.existing_stations = NetworkOptimizer._cached_stations.copy()
+            self.grid_points = NetworkOptimizer._cached_grid.copy()
+            return NetworkOptimizer._cached_quality or {}
+
         # Paths anchored from backend root
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         full_subcounty_path = os.path.join(project_root, subcounty_path)
@@ -106,11 +115,18 @@ class NetworkOptimizer:
         # 2. Compile spatial grids
         self._generate_search_grid()
         
-        logger.info("Loaded subcounties quality: %s, stations quality: %s", sc_quality["usability_score"], station_quality["usability_score"])
-        return {
+        # Cache for fast subsequent requests
+        NetworkOptimizer._cached_subcounties = self.subcounties.copy()
+        NetworkOptimizer._cached_stations = self.existing_stations.copy()
+        if self.grid_points is not None:
+            NetworkOptimizer._cached_grid = self.grid_points.copy()
+        NetworkOptimizer._cached_quality = {
             "subcounties_quality": sc_quality,
             "stations_quality": station_quality
         }
+
+        logger.info("Loaded subcounties quality: %s, stations quality: %s", sc_quality["usability_score"], station_quality["usability_score"])
+        return NetworkOptimizer._cached_quality
         
     def _generate_search_grid(self) -> None:
         """Compiles grid of candidate coordinates within municipal boundaries."""

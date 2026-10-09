@@ -21,14 +21,24 @@ class FleetIntelligenceService:
     def _get_parquet_path() -> str:
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         parquet_path = os.path.join(project_root, "data", "battery_telemetry.parquet").replace("\\", "/")
+        if not os.path.exists(parquet_path):
+            try:
+                from backend.app.modules.fleet.simulation import generate_fleet_telemetry
+                generate_fleet_telemetry(output_path="data/battery_telemetry.parquet", num_batteries=50, records_per_battery=100)
+            except Exception as e:
+                logger.error("Failed to auto-generate telemetry parquet: %s", e)
         if os.environ.get("VERCEL"):
             tmp_path = "/tmp/battery_telemetry.parquet"
             if not os.path.exists(tmp_path):
                 import shutil
                 try:
-                    shutil.copy2(parquet_path, tmp_path)
+                    if os.path.exists(parquet_path):
+                        shutil.copy2(parquet_path, tmp_path)
+                    else:
+                        from backend.app.modules.fleet.simulation import generate_fleet_telemetry
+                        generate_fleet_telemetry(output_path=tmp_path, num_batteries=50, records_per_battery=100)
                 except Exception as e:
-                    logger.error("Failed to copy battery_telemetry.parquet to /tmp: %s", e)
+                    logger.error("Failed to copy/generate battery_telemetry.parquet to /tmp: %s", e)
             parquet_path = tmp_path
         return parquet_path
 

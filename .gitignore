@@ -31,6 +31,8 @@ pip-delete-this-directory.txt
 *.sqlite
 *.duckdb
 *.parquet
+!backend/data/battery_telemetry.parquet
+!data/battery_telemetry.parquet
 
 # IDEs
 .idea/

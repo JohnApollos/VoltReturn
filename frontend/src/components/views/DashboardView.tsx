@@ -202,10 +202,10 @@ export const DashboardView: React.FC = () => {
             <div>
               <div className="text-[#5c564c] text-xs font-bold uppercase tracking-wider">Internal Rate of Return (IRR)</div>
               <div className="text-4xl font-extrabold text-[#1a68d1] mt-2">
-                {isLoading ? '...' : `${simulationData?.expected_irr_pct || '0.0'}%`}
+                {isLoading ? '...' : `${simulationData?.expected_irr_pct != null ? simulationData.expected_irr_pct : '0.0'}%`}
               </div>
               <div className="text-xs text-blue-700 mt-2 font-semibold">
-                Hurdle margin: +{(simulationData?.expected_irr_pct - 12.0).toFixed(1) || '0.0'}%
+                Hurdle margin: +{simulationData?.expected_irr_pct != null ? (simulationData.expected_irr_pct - 12.0).toFixed(1) : '0.0'}%
               </div>
             </div>
             <div className="p-3 bg-blue-50 text-[#1a68d1] border border-blue-100 rounded-md">
@@ -218,7 +218,7 @@ export const DashboardView: React.FC = () => {
             <div>
               <div className="text-[#5c564c] text-xs font-bold uppercase tracking-wider">Net Present Value (NPV)</div>
               <div className="text-3xl font-extrabold text-[#ea580c] mt-2">
-                {isLoading ? '...' : `KES ${(simulationData?.expected_npv_kes / 1000000).toFixed(1)}M`}
+                {isLoading ? '...' : simulationData?.expected_npv_kes != null ? `KES ${(simulationData.expected_npv_kes / 1000000).toFixed(1)}M` : 'KES 0.0M'}
               </div>
               <div className="text-xs text-amber-700 mt-2 font-semibold">
                 Discount factor: 12.0%
@@ -269,7 +269,7 @@ export const DashboardView: React.FC = () => {
           <div className="lg:col-span-2 bg-white border border-[#d8d2c4] p-6 rounded">
             <h3 className="text-slate-900 font-bold text-base border-b border-[#d8d2c4] pb-2 mb-4">Investment Memo Strategy</h3>
             <p className="text-slate-800 text-sm leading-relaxed mb-4">
-              Investing <span className="text-slate-950 font-extrabold">KES {budget_kes/1000000} Million</span> to build <span className="text-slate-950 font-extrabold">{num_stations} Swap Cabinets</span> in Nairobi yields an expected IRR of <span className="text-[#15803d] font-extrabold">{simulationData?.expected_irr_pct}%</span> and a net portfolio default risk of <span className="text-[#15803d] font-extrabold">{portfolioSummary?.expected_default_rate_pct}%</span>.
+              Investing <span className="text-slate-950 font-extrabold">KES {budget_kes/1000000} Million</span> to build <span className="text-slate-950 font-extrabold">{num_stations} Swap Cabinets</span> in Nairobi yields an expected IRR of <span className="text-[#15803d] font-extrabold">{simulationData?.expected_irr_pct ?? '0.0'}%</span> and a net portfolio default risk of <span className="text-[#15803d] font-extrabold">{portfolioSummary?.expected_default_rate_pct ?? '0.0'}%</span>.
             </p>
             <p className="text-[#5c564c] text-xs leading-relaxed">
               This layout bridges credit loops with charging economics. Transitioning stations to <span className="text-slate-900 font-semibold">Mixed</span> or <span className="text-slate-900 font-semibold">Off-Peak</span> grid charging mitigates power tariffs, maximizing NPV.

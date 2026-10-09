@@ -2,6 +2,7 @@ import os
 import logging
 import json
 import duckdb
+import numpy as np
 from typing import Dict, Any, Optional
 from sqlalchemy.orm import Session
 
@@ -114,7 +115,7 @@ class AIAssistantService:
             client = genai.Client(api_key=api_key)
             
             prompt = f"""
-            You are the BodaMotion OS Decision Assistant, an expert AI advisor for e-mobility operators in Nairobi, Kenya.
+            You are the VoltReturn Decision Assistant, an expert AI advisor for e-mobility operators in Nairobi, Kenya.
             Your job is to analyze local operational data and generate a clear, executive-level natural language answer.
             
             CRITICAL INSTRUCTION: You must strictly answer using ONLY the numbers and facts provided in the Ground Truth Context below. Do not make up or extrapolate statistics. If a question is not answerable by the context, state that you lack sufficient data.
@@ -192,7 +193,7 @@ The portfolio remains highly sensitive to distance-to-BSS, which governs the mar
 """
         else:
             return f"""### Executive Brief
-BodaMotion OS compiled local datasets. The geocoded Nairobi infrastructure network is fully mapped.
+VoltReturn compiled local datasets. The geocoded Nairobi infrastructure network is fully mapped.
 
 ### Operational Analysis
 - **Active Grid Footprint**: 66 swap locations are registered.

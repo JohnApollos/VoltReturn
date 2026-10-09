@@ -22,6 +22,7 @@ class ExpansionImpactRequest(BaseModel):
 @router.get("/recommend", response_model=List[Dict[str, Any]])
 def get_recommendations(
     n_stations: int = Query(10, ge=1, le=50),
+    num_stations: int = Query(None, ge=1, le=50),
     gap_threshold_km: float = Query(5.0, ge=1.0, le=20.0),
     db: Session = Depends(get_db)
 ):
@@ -30,9 +31,10 @@ def get_recommendations(
     Logs proposed actions to the Recommendations Ledger.
     """
     try:
+        station_count = num_stations if num_stations is not None else n_stations
         opt = NetworkOptimizer()
         opt.load_data(db)
-        recs_df = opt.recommend_stations(n_stations, gap_threshold_km)
+        recs_df = opt.recommend_stations(station_count, gap_threshold_km)
         
         if recs_df.empty:
             return []
@@ -111,3 +113,18 @@ def get_brand_coverage(
         return coverage
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Brand coverage calculation failed: {str(e)}")
+
+
+@router.get("/existing-stations", response_model=List[Dict[str, Any]])
+def get_existing_stations(
+    db: Session = Depends(get_db)
+):
+    """Returns the registered geocoded charging stations across Nairobi."""
+    try:
+        opt = NetworkOptimizer()
+        opt.load_data(db)
+        if opt.existing_stations is not None and not opt.existing_stations.empty:
+            return opt.existing_stations.to_dict(orient="records")
+        return []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load existing stations: {str(e)}")

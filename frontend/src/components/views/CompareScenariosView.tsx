@@ -111,21 +111,23 @@ export const CompareScenariosView: React.FC = () => {
                     <td className="p-4 text-center font-semibold text-slate-900">{sc.default_reduction}%</td>
                     <td className="p-4 text-center text-[#5c564c]">{sc.carbon_offset?.toLocaleString()} tCO2</td>
                     <td className="p-4 text-center">{sc.payback} Yrs</td>
-                    <td className="p-4 text-center flex items-center justify-center gap-2">
-                      <button 
-                        onClick={() => handleLoadScenario(sc)}
-                        className="p-1.5 bg-emerald-50 border border-emerald-200 hover:bg-[#15803d] text-[#15803d] hover:text-white rounded transition-all cursor-pointer"
-                        title="Load Scenario"
-                      >
-                        <Play className="w-3.5 h-3.5 fill-current" />
-                      </button>
-                      <button 
-                        onClick={() => deleteScenario(sc.id)}
-                        className="p-1.5 bg-red-50 border border-red-100 hover:bg-red-600 text-red-600 hover:text-white rounded transition-all cursor-pointer"
-                        title="Delete Scenario"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                    <td className="p-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <button 
+                          onClick={() => handleLoadScenario(sc)}
+                          className="p-1.5 bg-emerald-50 border border-emerald-200 hover:bg-[#15803d] text-[#15803d] hover:text-white rounded transition-all cursor-pointer"
+                          title="Load Scenario"
+                        >
+                          <Play className="w-3.5 h-3.5 fill-current" />
+                        </button>
+                        <button 
+                          onClick={() => deleteScenario(sc.id)}
+                          className="p-1.5 bg-red-50 border border-red-100 hover:bg-red-600 text-red-600 hover:text-white rounded transition-all cursor-pointer"
+                          title="Delete Scenario"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
