@@ -221,17 +221,21 @@ class FleetIntelligenceService:
         db.add(dq_log)
         db.commit()
         
-        # Append to existing parquet
-        if os.path.exists(parquet_path):
-            try:
-                df_existing = pd.read_parquet(parquet_path)
+        # Append to existing parquet via native DuckDB (no pyarrow dependency)
+        escaped_path = parquet_path.replace("\\", "/")
+        con = duckdb.connect()
+        try:
+            if os.path.exists(parquet_path):
+                df_existing = con.execute(f"SELECT * FROM read_parquet('{escaped_path}')").df()
                 df_combined = pd.concat([df_existing, df_new], ignore_index=True)
-                df_combined.to_parquet(parquet_path, index=False)
-            except Exception as e:
-                logger.error("Failed to append to existing parquet: %s", e)
-                df_new.to_parquet(parquet_path, index=False)
-        else:
-            df_new.to_parquet(parquet_path, index=False)
+                con.execute(f"COPY df_combined TO '{escaped_path}' (FORMAT PARQUET)")
+            else:
+                con.execute(f"COPY df_new TO '{escaped_path}' (FORMAT PARQUET)")
+        except Exception as e:
+            logger.error("Failed to append to existing parquet: %s", e)
+            con.execute(f"COPY df_new TO '{escaped_path}' (FORMAT PARQUET)")
+        finally:
+            con.close()
             
         return {
             "status": "success",

@@ -2,6 +2,7 @@ import os
 import datetime
 import numpy as np
 import pandas as pd
+import duckdb
 from typing import List, Dict, Any
 
 def generate_fleet_telemetry(
@@ -81,7 +82,10 @@ def generate_fleet_telemetry(
             })
             
     df = pd.DataFrame(data)
-    df.to_parquet(full_output_path, index=False)
+    escaped_path = full_output_path.replace("\\", "/")
+    con = duckdb.connect()
+    con.execute(f"COPY df TO '{escaped_path}' (FORMAT PARQUET)")
+    con.close()
     print(f"Successfully generated {len(df)} telemetry records to {full_output_path}")
 
 if __name__ == "__main__":

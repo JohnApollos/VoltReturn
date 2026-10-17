@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 from typing import Dict, List, Any, Tuple, Optional
-from sklearn.cluster import KMeans
 from sqlalchemy.orm import Session
 
 from backend.app.core.config import settings
@@ -181,6 +180,54 @@ class NetworkOptimizer:
                 
         return pd.DataFrame(gap_points)
         
+    @staticmethod
+    def _weighted_kmeans(
+        X: np.ndarray, 
+        n_clusters: int, 
+        weights: np.ndarray, 
+        n_init: int = 10, 
+        max_iter: int = 100, 
+        random_state: int = 42
+    ) -> np.ndarray:
+        """Pure NumPy sample-weighted K-Means placement optimization algorithm."""
+        rng = np.random.RandomState(random_state)
+        best_inertia = float("inf")
+        best_centers = None
+        w = np.array(weights, dtype=float)
+        w_sum = w.sum()
+        p = w / w_sum if w_sum > 0 else np.ones(len(X)) / len(X)
+        
+        for _ in range(n_init):
+            idx = rng.choice(len(X), size=n_clusters, replace=False, p=p)
+            centers = X[idx].copy()
+            
+            for _ in range(max_iter):
+                dists = np.linalg.norm(X[:, np.newaxis] - centers, axis=2)
+                labels = np.argmin(dists, axis=1)
+                
+                new_centers = np.zeros_like(centers)
+                for k in range(n_clusters):
+                    mask = (labels == k)
+                    if np.any(mask):
+                        new_centers[k] = np.average(X[mask], axis=0, weights=w[mask])
+                    else:
+                        new_centers[k] = X[rng.choice(len(X), p=p)]
+                
+                if np.allclose(centers, new_centers, atol=1e-5):
+                    break
+                centers = new_centers
+                
+            inertia = sum(
+                np.sum(w[labels == k] * np.sum((X[labels == k] - centers[k]) ** 2, axis=1))
+                for k in range(n_clusters)
+                if np.any(labels == k)
+            )
+            if inertia < best_inertia:
+                best_inertia = inertia
+                best_centers = centers
+                
+        return best_centers
+
     def recommend_stations(self, n_stations: int = 10, gap_threshold_km: float = 5.0) -> pd.DataFrame:
         """Determines best coordinates for expansion using K-Means placement optimization."""
         df_gaps = self.find_coverage_gaps(threshold_km=gap_threshold_km)
@@ -189,13 +236,17 @@ class NetworkOptimizer:
             return pd.DataFrame()
             
         n_clusters = min(int(n_stations), len(df_gaps))
-        X = df_gaps[["lat", "lon"]]
-        weights = df_gaps["weight"]
+        X = df_gaps[["lat", "lon"]].values
+        weights = df_gaps["weight"].values
         
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
-        kmeans.fit(X, sample_weight=weights)
+        centers = self._weighted_kmeans(
+            X=X, 
+            n_clusters=n_clusters, 
+            weights=weights, 
+            n_init=10, 
+            random_state=42
+        )
         
-        centers = kmeans.cluster_centers_
         recommended_locations: List[Dict[str, Any]] = []
         
         for i, center in enumerate(centers):

@@ -4,14 +4,82 @@ import json
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Optional
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, roc_curve, auc
 from sqlalchemy.orm import Session
 
 from backend.app.core.model_governance import ModelGovernanceManager
 
 logger = logging.getLogger(__name__)
+
+class StandardScaler:
+    """Pure NumPy standard feature normalizer."""
+    def __init__(self) -> None:
+        self.mean_ = None
+        self.scale_ = None
+
+    def fit(self, X: Any) -> "StandardScaler":
+        arr = np.array(X, dtype=float)
+        self.mean_ = np.mean(arr, axis=0)
+        self.scale_ = np.std(arr, axis=0)
+        self.scale_[self.scale_ == 0] = 1.0
+        return self
+
+    def transform(self, X: Any) -> np.ndarray:
+        arr = np.array(X, dtype=float)
+        return (arr - self.mean_) / self.scale_
+
+    def fit_transform(self, X: Any) -> np.ndarray:
+        return self.fit(X).transform(X)
+
+class LogisticRegression:
+    """Pure NumPy vector gradient-descent Logistic Regression model."""
+    def __init__(self, random_state: int = 42, lr: float = 0.1, max_iter: int = 400) -> None:
+        self.random_state = random_state
+        self.lr = lr
+        self.max_iter = max_iter
+        self.coef_ = None
+        self.intercept_ = None
+
+    def fit(self, X: Any, y: Any) -> "LogisticRegression":
+        rng = np.random.RandomState(self.random_state)
+        X_arr = np.array(X, dtype=float)
+        y_arr = np.array(y, dtype=float)
+        N, D = X_arr.shape
+        w = rng.normal(0, 0.01, size=D)
+        b = 0.0
+
+        for _ in range(self.max_iter):
+            z = X_arr @ w + b
+            p = 1.0 / (1.0 + np.exp(-np.clip(z, -25.0, 25.0)))
+            grad_w = (X_arr.T @ (p - y_arr)) / N
+            grad_b = np.mean(p - y_arr)
+            w -= self.lr * grad_w
+            b -= self.lr * grad_b
+
+        self.coef_ = np.array([w])
+        self.intercept_ = np.array([b])
+        return self
+
+    def predict_proba(self, X: Any) -> np.ndarray:
+        X_arr = np.array(X, dtype=float)
+        z = X_arr @ self.coef_[0] + self.intercept_[0]
+        p = 1.0 / (1.0 + np.exp(-np.clip(z, -25.0, 25.0)))
+        return np.column_stack([1.0 - p, p])
+
+    def predict(self, X: Any) -> np.ndarray:
+        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
+
+def accuracy_score(y_true: Any, y_pred: Any) -> float:
+    return float(np.mean(np.asarray(y_true) == np.asarray(y_pred)))
+
+def compute_auc(y_true: Any, y_prob: Any) -> float:
+    """Computes Area Under ROC curve via Mann-Whitney rank statistic."""
+    y_t = np.asarray(y_true)
+    y_p = np.asarray(y_prob)
+    pos = y_p[y_t == 1]
+    neg = y_p[y_t == 0]
+    if len(pos) == 0 or len(neg) == 0:
+        return 0.5
+    return float(np.mean(pos[:, None] > neg) + 0.5 * np.mean(pos[:, None] == neg))
 
 # Model features
 FEATURES_DEFAULT = [
@@ -77,8 +145,7 @@ class RiderIntelligenceService:
         y_def_prob = self.default_model.predict_proba(X_def_scaled)[:, 1]
         
         def_acc = float(accuracy_score(y_def, y_def_pred))
-        fpr, tpr, _ = roc_curve(y_def, y_def_prob)
-        def_auc = float(auc(fpr, tpr))
+        def_auc = float(compute_auc(y_def, y_def_prob))
         
         # Log default model to governance
         ModelGovernanceManager.register_model(
@@ -112,8 +179,7 @@ class RiderIntelligenceService:
         y_ch_prob = self.churn_model.predict_proba(X_ch_scaled)[:, 1]
         
         ch_acc = float(accuracy_score(y_ch, y_ch_pred))
-        fpr_c, tpr_c, _ = roc_curve(y_ch, y_ch_prob)
-        ch_auc = float(auc(fpr_c, tpr_c))
+        ch_auc = float(compute_auc(y_ch, y_ch_prob))
         
         # Log churn model to governance
         ModelGovernanceManager.register_model(
