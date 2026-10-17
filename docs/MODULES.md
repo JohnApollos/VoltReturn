@@ -7,7 +7,7 @@ This document outlines the operational and executive questions answered by each 
 ## Module 1: Infrastructure Intelligence
 * **Executive Question**: Where should we build next?
 * **Methodology**: Identifies coverage gaps by looking for regions outside a 5km radius of the **66 active swap stations** mapped across Nairobi. Runs sample-weighted K-Means placement optimization on gap grid points, using subcounty population densities as weights.
-* **Visual Interface**: `GisWorkspaceView` and `OptimizationView` mapping the recommended centroids (neon-green circle markers) and listing coordinate indices.
+* **Visual Interface**: `GisWorkspaceView` and `OptimizationView` mapping the recommended centroids (emerald pulse circle markers) and listing coordinate indices.
 
 ---
 

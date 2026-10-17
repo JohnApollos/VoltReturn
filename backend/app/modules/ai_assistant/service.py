@@ -16,6 +16,14 @@ from backend.app.modules.rider.service import RiderIntelligenceService
 
 logger = logging.getLogger(__name__)
 
+def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    lat1_rad, lon1_rad = np.radians(lat1), np.radians(lon1)
+    lat2_rad, lon2_rad = np.radians(lat2), np.radians(lon2)
+    dlat = lat2_rad - lat1_rad
+    dlon = lon2_rad - lon1_rad
+    a = np.sin(dlat / 2.0)**2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2.0)**2
+    return 6371.0 * 2.0 * np.arcsin(np.sqrt(a))
+
 class AIAssistantService:
     """Uses the June 2026 google-genai Interactions API to generate grounded e-mobility business summaries."""
     
@@ -204,10 +212,3 @@ VoltReturn compiled local datasets. The geocoded Nairobi infrastructure network 
 - Configure scenario studio sliders to forecast expected IRR and carbon credits.
 """
 
-def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-    lat1_rad, lon1_rad = np.radians(lat1), np.radians(lon1)
-    lat2_rad, lon2_rad = np.radians(lat2), np.radians(lon2)
-    dlat = lat2_rad - lat1_rad
-    dlon = lon2_rad - lon1_rad
-    a = np.sin(dlat / 2.0)**2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon / 2.0)**2
-    return 6371.0 * 2.0 * np.arcsin(np.sqrt(a))

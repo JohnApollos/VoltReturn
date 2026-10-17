@@ -17,7 +17,6 @@ import CarbonView from '../components/views/CarbonView';
 // Icons
 import { 
   LayoutDashboard, 
-  Settings, 
   Map, 
   Compass, 
   TrendingUp, 

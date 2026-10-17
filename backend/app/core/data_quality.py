@@ -79,7 +79,7 @@ class DataQualityEngine:
             
         # Log to Database
         log_entry = DataQualityLog(
-            timestamp=datetime.datetime.utcnow(),
+            timestamp=datetime.datetime.now(datetime.timezone.utc),
             dataset_name=dataset_name,
             completeness=completeness,
             duplicates_count=duplicates_count,

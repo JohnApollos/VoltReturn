@@ -57,7 +57,7 @@ For the mathematical formulations, refer to the [docs/MATHEMATICAL_MODELS.md](do
 ## 4. Key Enterprise Systems
 
 ### A. Dynamic GIS Mapping Workspace
-An interactive dark-themed spatial mapping workspace powered by Leaflet and CartoDB Dark Matter tiles. Layers can be toggled to render Nairobi's active swap station network, recommended centroids (highlighted with neon-green pulse indicators), population density, and default risk hotspots.
+An interactive spatial mapping workspace powered by Leaflet with dual-layer support (CARTO Voyager Editorial basemap and ESRI High-Resolution Satellite imagery). Renders Nairobi's complete footprint of **66 geocoded active swap stations** color-coded by operator brand (Roam, Ampersand, Spiro, Zeno), alongside K-Means recommended expansion centroids (with emerald pulse rings), population density layers, and borrower default risk zones.
 
 ### B. Corporate Finance Analytics
 Integrates high-end Recharts components to represent complex financial outcomes:

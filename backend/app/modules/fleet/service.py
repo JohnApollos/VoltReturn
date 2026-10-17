@@ -200,19 +200,23 @@ class FleetIntelligenceService:
         df_new["temperature"] = df_new["temperature"].astype(float)
         
         # Basic Validation check
+        total_cells = len(df_new) * len(df_new.columns) if len(df_new) > 0 else 1
         null_count = int(df_new.isnull().sum().sum())
+        completeness = max(0.0, 1.0 - (null_count / total_cells))
         out_of_bounds_soh = int(((df_new["soh"] < 0) | (df_new["soh"] > 100)).sum())
+        anomaly_rate = float(out_of_bounds_soh / len(df_new)) if len(df_new) > 0 else 0.0
+        usability_score = max(0.0, (completeness * 100.0) - (anomaly_rate * 100.0))
+        status = "PASS" if usability_score >= 85.0 else ("WARNING" if usability_score >= 60.0 else "FAIL")
         
         # Log to Data Quality table
         from backend.app.models.schemas import DataQualityLog
         dq_log = DataQualityLog(
             dataset_name="battery_telemetry_parquet",
-            records_scanned=len(df_new),
-            null_count=null_count,
+            completeness=round(completeness, 4),
             duplicates_count=0,
-            boundary_violations=out_of_bounds_soh,
-            status="PASS" if out_of_bounds_soh == 0 else "WARNING",
-            remediation_applied="Ingested batch logs successfully."
+            anomaly_rate=round(anomaly_rate, 4),
+            status=status,
+            usability_score=round(usability_score, 1)
         )
         db.add(dq_log)
         db.commit()
@@ -234,6 +238,8 @@ class FleetIntelligenceService:
             "records_ingested": len(df_new),
             "data_quality": {
                 "null_count": null_count,
-                "boundary_violations": out_of_bounds_soh
+                "boundary_violations": out_of_bounds_soh,
+                "completeness": round(completeness, 4),
+                "usability_score": round(usability_score, 1)
             }
         }

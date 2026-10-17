@@ -39,7 +39,7 @@ class ModelGovernanceManager:
         if existing:
             existing.name = name
             existing.version = version
-            existing.date_trained = datetime.datetime.utcnow()
+            existing.date_trained = datetime.datetime.now(datetime.timezone.utc)
             existing.features_used = json.dumps(features)
             existing.parameters = json.dumps(parameters)
             existing.validation_metrics = json.dumps(validation_metrics)
@@ -52,7 +52,7 @@ class ModelGovernanceManager:
                 model_id=model_id,
                 name=name,
                 version=version,
-                date_trained=datetime.datetime.utcnow(),
+                date_trained=datetime.datetime.now(datetime.timezone.utc),
                 features_used=json.dumps(features),
                 parameters=json.dumps(parameters),
                 validation_metrics=json.dumps(validation_metrics),

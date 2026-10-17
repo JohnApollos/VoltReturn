@@ -90,3 +90,22 @@ def test_rider_models_and_governance(db: Session):
     portfolio = service.evaluate_portfolio(db)
     assert portfolio["total_portfolio_riders"] == 1000
     assert portfolio["expected_default_rate_pct"] > 0.0
+
+def test_fleet_telemetry_ingest(db: Session):
+    """Verifies that external real telemetry records are validated and ingested."""
+    test_records = [
+        {
+            "battery_id": "BAT-TEST-999",
+            "vehicle_id": "VEH-TEST-999",
+            "timestamp": "2026-10-17T12:00:00Z",
+            "soh": 96.5,
+            "soc": 82.0,
+            "cycle_count": 120,
+            "temperature": 28.5
+        }
+    ]
+    res = FleetIntelligenceService.ingest_telemetry(test_records, db)
+    assert res["status"] == "success"
+    assert res["records_ingested"] == 1
+    assert res["data_quality"]["boundary_violations"] == 0
+

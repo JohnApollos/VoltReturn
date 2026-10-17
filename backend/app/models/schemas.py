@@ -6,7 +6,7 @@ class Recommendation(Base):
     __tablename__ = "recommendations"
 
     rec_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     module = Column(String(50), nullable=False)
     action_proposed = Column(String(255), nullable=False)
     parameters = Column(Text, nullable=True)  # JSON-encoded parameters
@@ -22,7 +22,7 @@ class ModelGovernance(Base):
     model_id = Column(String(100), primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     version = Column(String(50), nullable=False)
-    date_trained = Column(DateTime, default=datetime.datetime.utcnow)
+    date_trained = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     validation_metrics = Column(Text, nullable=True)  # JSON-encoded metric scorecards
     features_used = Column(Text, nullable=True)       # JSON-encoded list of features
     parameters = Column(Text, nullable=True)          # JSON-encoded coefficient parameters
@@ -32,7 +32,7 @@ class DataQualityLog(Base):
     __tablename__ = "data_quality_logs"
 
     check_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     dataset_name = Column(String(100), nullable=False)
     completeness = Column(Float, nullable=False)
     duplicates_count = Column(Integer, nullable=False)

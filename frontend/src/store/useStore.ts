@@ -37,7 +37,7 @@ export interface RecommendedStation {
 // Define the main VoltReturn state interface
 interface VoltReturnState {
   // Navigation & UI States
-  activeView: 'landing' | 'dashboard' | 'scenarios' | 'gis' | 'optimization' | 'financials' | 'carbon' | 'ai' | 'compare' | 'memo' | 'settings';
+  activeView: 'landing' | 'dashboard' | 'scenarios' | 'gis' | 'optimization' | 'financials' | 'carbon' | 'ai' | 'compare' | 'memo';
   isBoardMode: boolean;
   isLoading: boolean;
   error: string | null;
